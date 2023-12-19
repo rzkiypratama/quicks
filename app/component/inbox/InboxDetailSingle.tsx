@@ -11,28 +11,15 @@ import NewMessageLine from "../NewMessageLine";
 import InboxView from "./InboxView";
 
 export default function Component() {
-  const [chatDataSingleState, setChatDataSingle] =
-    useState<ChatData[]>(chatData);
-  const [newMessage, setNewMessage] =
-    useState("");
-  const [showInboxDetail, setShowInboxDetail] =
-    useState(false);
-  const [
-    selectedChatIndex,
-    setSelectedChatIndex,
-  ] = useState<number | null>(null);
-  const [
-    showNewMessageBadge,
-    setShowNewMessageBadge,
-  ] = useState(true);
-  const [isReplying, setIsReplying] =
-    useState(false);
-  const [replyMessage, setReplyMessage] =
-    useState<string | null>(null);
-  const [replyDraft, setReplyDraft] =
-    useState<string>("");
-  const [replyMessages, setReplyMessages] =
-    useState<{ [key: number]: string }>({});
+  const [chatDataSingleState, setChatDataSingle] = useState<ChatData[]>(chatData);
+const [newMessage, setNewMessage] = useState("");
+const [showInboxDetail, setShowInboxDetail] = useState(false);
+const [selectedChatIndex, setSelectedChatIndex] = useState<number | null>(null);
+const [showNewMessageBadge, setShowNewMessageBadge] = useState(true);
+const [isReplying, setIsReplying] = useState(false);
+const [replyMessage, setReplyMessage] = useState<string | null>(null);
+const [replyDraft, setReplyDraft] = useState<string>("");
+const [replyMessages, setReplyMessages] = useState<{ [key: number]: string }>({});
 
   const handleOptionClick = (index: number) => {
     setSelectedChatIndex((prevIndex) =>

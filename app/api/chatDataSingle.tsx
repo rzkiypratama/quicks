@@ -5,6 +5,15 @@ export interface ChatData {
   time: string;
   isNew?: boolean;
   isReply?: boolean;
+  replies?: ReplyData[];
+}
+
+export interface ReplyData {
+  id: number;
+  sender: string;
+  message: string;
+  time: string;
+  chat?: ChatData; // Tambahkan properti chat sesuai relasi
 }
 
 

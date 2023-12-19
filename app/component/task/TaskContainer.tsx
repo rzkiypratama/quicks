@@ -9,24 +9,50 @@ import {
 } from "react-icons/fa";
 import { format } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
+import axios, { AxiosResponse } from "axios";
+
+export interface TasksData {
+  id: number;
+  attributes: {
+    title: string;
+    description: string;
+    taskCreated: string;
+  };
+}
 
 interface TodoItemProps {
+  taskId: number;
   title: string;
   description: string;
   taskCreated: string;
+  isComplete: boolean;
   onDelete: () => void;
+  setTasks: React.Dispatch<
+    React.SetStateAction<TasksData[]>
+  >;
 }
 
 const TaskContainer: React.FC<TodoItemProps> = ({
+  taskId,
   title,
   description: initialDescription,
   taskCreated: initialTaskCreated,
+  isComplete: initialIsComplete,
   onDelete,
+  setTasks,
 }) => {
   const [isCollapsed, setIsCollapsed] =
     useState<boolean>(false);
   const [isTaskCompleted, setIsTaskCompleted] =
-    useState<boolean>(false);
+    useState<boolean>(() => {
+      // Load the initial state from localStorage or use the provided initialIsComplete
+      const storedState = localStorage.getItem(
+        `task_${taskId}_isComplete`,
+      );
+      return storedState !== null
+        ? JSON.parse(storedState)
+        : initialIsComplete;
+    });
   const [remainingDays, setRemainingDays] =
     useState<number | null>(null);
   const [taskCreatedDate, setTaskCreatedDate] =
@@ -39,16 +65,36 @@ const TaskContainer: React.FC<TodoItemProps> = ({
   ] = useState<boolean>(false);
   const [isEditing, setIsEditing] =
     useState(false);
-    const [editedDescription, setEditedDescription] =
-    useState(initialDescription || "No Description");
+  const [
+    editedDescription,
+    setEditedDescription,
+  ] = useState(
+    initialDescription || "No Description",
+  );
+  const [editedTitle, setEditedTitle] =
+    useState<string>(title);
+  const [
+    editedTaskCreated,
+    setEditedTaskCreated,
+  ] = useState<string>(initialTaskCreated);
 
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   const handleCheckboxChange = () => {
-    setIsTaskCompleted(!isTaskCompleted);
+    // Toggle the local state without making an API call
+    setIsTaskCompleted(
+      (prevIsComplete) => !prevIsComplete,
+    );
   };
+
+  useEffect(() => {
+    localStorage.setItem(
+      `task_${taskId}_isComplete`,
+      JSON.stringify(isTaskCompleted),
+    );
+  }, [isTaskCompleted, taskId]);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -97,8 +143,6 @@ const TaskContainer: React.FC<TodoItemProps> = ({
   ) => {
     // Update state taskCreated
     setTaskCreated(newTaskCreated);
-
-    // ... (kode lainnya, misalnya pembaruan ke server atau penyimpanan lokal)
   };
 
   const toggleOptionsMenu = () => {
@@ -106,7 +150,6 @@ const TaskContainer: React.FC<TodoItemProps> = ({
   };
 
   const handleDeleteClick = () => {
-    // Panggil onDelete ketika delete diklik
     onDelete();
   };
 
@@ -114,9 +157,54 @@ const TaskContainer: React.FC<TodoItemProps> = ({
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    // Lakukan penyimpanan atau pembaruan data sesuai kebutuhan aplikasi Anda
-    setIsEditing(false);
+  const handleSaveClick = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:1337/api/task-lists/${taskId}`,
+        {
+          data: {
+            attributes: {
+              title: editedTitle,
+              description: editedDescription,
+              taskCreated: editedTaskCreated,
+              // Add other properties as needed
+            },
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // Add other headers as needed
+          },
+        },
+      );
+
+      if (!response.data) {
+        console.error(
+          "Failed to update task:",
+          response.statusText,
+        );
+        return;
+      }
+
+      const updatedTask = response.data.data;
+
+      // Update state tasks by replacing the old task with the updated task
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === updatedTask.id
+            ? updatedTask
+            : task,
+        ),
+      );
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error(
+        "Error updating task:",
+        error,
+      );
+    }
   };
 
   const handleCancelClick = () => {
@@ -126,7 +214,9 @@ const TaskContainer: React.FC<TodoItemProps> = ({
 
   useEffect(() => {
     setIsEditing(false);
-    setEditedDescription(initialDescription || "No Description");
+    setEditedDescription(
+      initialDescription || "No Description",
+    );
   }, [initialDescription]);
 
   return (
@@ -256,7 +346,11 @@ const TaskContainer: React.FC<TodoItemProps> = ({
             <div className='mr-6'></div>
             <span>
               <FaPencilAlt
-                color={editedDescription ? '#2F80ED' : 'gray'}
+                color={
+                  editedDescription
+                    ? "#2F80ED"
+                    : "gray"
+                }
                 onClick={handleEditClick}
                 style={{ cursor: "pointer" }}
               />
@@ -275,7 +369,9 @@ const TaskContainer: React.FC<TodoItemProps> = ({
                 />
                 <button
                   className='bg-blue-500 text-white px-4 py-2 rounded-md'
-                  onClick={handleSaveClick}
+                  onClick={() =>
+                    handleSaveClick()
+                  }
                 >
                   Save
                 </button>
@@ -288,7 +384,8 @@ const TaskContainer: React.FC<TodoItemProps> = ({
               </div>
             ) : (
               <p className='ml-2 mr-[60px]'>
-                {editedDescription || "No Description"}
+                {editedDescription ||
+                  "No Description"}
               </p>
             )}
           </div>
