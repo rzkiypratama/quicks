@@ -2,17 +2,13 @@ interface NewMessageLineProps {
   isNewMessage: boolean;
 }
 
-const NewMessageLine: React.FC<
-  NewMessageLineProps
-> = ({ isNewMessage }) => {
+const NewMessageLine: React.FC<NewMessageLineProps> = ({ isNewMessage }) => {
   return (
     <div
-      className={`relative text-center mt-10 ${
-        isNewMessage ? "block" : "hidden"
-      }`}
-    >
-      <hr className='border-t-2 border-[#EB5757] w-full mx-auto' />
-      <span className='bg-white px-2 text-[#EB5757] relative top-[-12px]'>
+      className={`relative mt-10 text-center ${
+        isNewMessage ? "block" : "hidden"}`}>
+      <hr className="mx-auto w-full border-t-2 border-[#EB5757]" />
+      <span className="relative top-[-12px] bg-white px-2 text-[#EB5757]">
         New Message
       </span>
     </div>

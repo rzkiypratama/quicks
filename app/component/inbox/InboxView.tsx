@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import styles from "../../../public/styles/SearchBarInbox.module.css";
 import InboxDetailGroup from "./InboxDetailGroup";
@@ -32,197 +32,186 @@ const InboxView: React.FC = () => {
     fetchData();
   }, []);
   return (
-    <div className='h-[80vh] w-[734px] bg-white fixed bottom-24 right-4 px-[34px] pt-5 shadow-md tracking-wide z-[60]'>
+    <div className="fixed bottom-24 right-4 z-[60] h-[80vh] w-[734px] bg-white px-[34px] pt-5 tracking-wide shadow-md">
       {/* search bar */}
-      <div
-        className={`${styles.searchBar} px-10`}
-      >
+      <div className={`${styles.searchBar} px-10`}>
         <img
-          src='assets/search.png'
-          alt='Search'
+          src="assets/search.png"
+          alt="Search"
           className={styles.searchIcon}
         />
         <input
-          type='text'
-          placeholder='Search'
+          type="text"
+          placeholder="Search"
           className={styles.searchInput}
         />
       </div>
 
       {/* message area */}
-      <div className='message-container'>
+      <div className="message-container">
         {isLoading ? (
           <LoadingIndicator loadingText={"Loading Chats"} />
         ) : (
           <>
-          {/* inbox detail */}
-          <div className='my-6 flex cursor-pointer' onClick={handleInboxDetailClick}>
-            {/* avatar icon */}
-            <div className='w-auto mr-8'>
-              <img
-                src='/assets/default-avatar.png'
-                alt='default avatar background'
-                className='absolute ml-4 h-9 w-9 z-10'
-              />
-              <img
-                src='/assets/default-avatar-bg.png'
-                alt='default avatar'
-                className='h-9 w-9'
-              />
-            </div>
-  
-            {/* message header */}
-            <div className='flex gap-4'>
-              <div className='text-secondary'>
-                {/* group name */}
-                <p className='font-bold text-[16px] text-main'>
-                  109220-Naturalization
-                </p>
-                {/* sender info */}
-                <p className='font-bold text-[14px]'>
-                  Cameron Phillips :
-                </p>
-                <p className='text-[14px]'>
-                  Please check this out!
-                </p>
+            {/* inbox detail */}
+            <div
+              className="my-6 flex cursor-pointer"
+              onClick={handleInboxDetailClick}
+            >
+              {/* avatar icon */}
+              <div className="mr-8 w-auto">
+                <img
+                  src="/assets/default-avatar.png"
+                  alt="default avatar background"
+                  className="absolute z-10 ml-4 h-9 w-9"
+                />
+                <img
+                  src="/assets/default-avatar-bg.png"
+                  alt="default avatar"
+                  className="h-9 w-9"
+                />
               </div>
-  
-              <div className='flex gap-3 text-[14px]'>
-                {/* date */}
-                <p>January 1, 2021</p>
-                {/* time */}
-                <p>19:10</p>
-              </div>
-            </div>
-          </div>
-          {showInboxDetail && <InboxDetailGroup />}
-  
-  
-          <hr />
-  
-          <div className='my-6 grid grid-cols-[auto,1fr]'>
-            {/* avatar icon */}
-            <div className='w-auto mr-8'>
-              <img
-                src='/assets/default-avatar.png'
-                alt='default avatar background'
-                className='absolute ml-4 h-9 w-9 z-10'
-              />
-              <img
-                src='/assets/default-avatar-bg.png'
-                alt='default avatar'
-                className='h-9 w-9'
-              />
-            </div>
-  
-            {/* message header */}
-            <div className='flex'>
-              <div className='flex-grow w-9 text-secondary'>
-                {/* group name */}
-                <p className='font-bold text-[16px] text-main'>
-                  Jeannette Moraima Guaasdasdman
-                  Chamba (Hutto I-589) [ Hutto
-                  Follow Up - Brief Service ]
-                </p>
-                {/* sender info */}
-                <p className='font-bold text-[14px]'>
-                  Ellen :
-                </p>
-                {/* message */}
-                <p className='text-[14px]'>
-                  Hey please read!
-                </p>
-              </div>
-  
-              <div className='flex gap-3 text-[14px]'>
-                {/* date */}
-                <p>02/06/2021</p>
-                {/* time */}
-                <p>19:10</p>
+
+              {/* message header */}
+              <div className="flex gap-4">
+                <div className="text-secondary">
+                  {/* group name */}
+                  <p className="text-[16px] font-bold text-main">
+                    109220-Naturalization
+                  </p>
+                  {/* sender info */}
+                  <p className="text-[14px] font-bold">Cameron Phillips :</p>
+                  <p className="text-[14px]">Please check this out!</p>
+                </div>
+
+                <div className="flex gap-3 text-[14px]">
+                  {/* date */}
+                  <p>January 1, 2021</p>
+                  {/* time */}
+                  <p>19:10</p>
+                </div>
               </div>
             </div>
-          </div>
-  
-          <hr />
-  
-          <div className='my-6 grid grid-cols-[auto,1fr]'>
-            {/* avatar icon */}
-            <div className='w-auto mr-8'>
-              <img
-                src='/assets/default-avatar.png'
-                alt='default avatar background'
-                className='absolute ml-4 h-9 w-9 z-10'
-              />
-              <img
-                src='/assets/default-avatar-bg.png'
-                alt='default avatar'
-                className='h-9 w-9'
-              />
-            </div>
-  
-            {/* message header */}
-            <div className='flex'>
-              <div className='flex-grow w-9 text-secondary'>
-                {/* mail header */}
-                <p className='font-bold text-[16px] text-main'>
-                  8405-Diana SALAZAR MUNGUIA
-                </p>
-                {/* sender */}
-                <p className='font-bold text-[14px]'>
-                  Cameron Phillips :
-                </p>
-                {/* message */}
-                <p className='text-[14px]'>
-                  I understand your initial concerns
-                  and thats very valid, Elizabeth.
-                  But you ...
-                  {/* add limitation for message later, that '...' is a max length bro */}
-                </p>
+            {showInboxDetail && <InboxDetailGroup />}
+
+            <hr />
+
+            <div className="my-6 grid grid-cols-[auto,1fr]">
+              {/* avatar icon */}
+              <div className="mr-8 w-auto">
+                <img
+                  src="/assets/default-avatar.png"
+                  alt="default avatar background"
+                  className="absolute z-10 ml-4 h-9 w-9"
+                />
+                <img
+                  src="/assets/default-avatar-bg.png"
+                  alt="default avatar"
+                  className="h-9 w-9"
+                />
               </div>
-  
-              <div className='flex gap-3 text-[14px]'>
-                {/* date */}
-                <p>02/06/2021</p>
-                {/* time */}
-                <p>19:10</p>
+
+              {/* message header */}
+              <div className="flex">
+                <div className="w-9 flex-grow text-secondary">
+                  {/* group name */}
+                  <p className="text-[16px] font-bold text-main">
+                    Jeannette Moraima Guaasdasdman Chamba (Hutto I-589) [ Hutto
+                    Follow Up - Brief Service ]
+                  </p>
+                  {/* sender info */}
+                  <p className="text-[14px] font-bold">Ellen :</p>
+                  {/* message */}
+                  <p className="text-[14px]">Hey please read!</p>
+                </div>
+
+                <div className="flex gap-3 text-[14px]">
+                  {/* date */}
+                  <p>02/06/2021</p>
+                  {/* time */}
+                  <p>19:10</p>
+                </div>
               </div>
             </div>
-          </div>
-  
-          <hr />
-  
-          <div className='my-6 grid grid-cols-[auto,1fr] cursor-pointer' onClick={handleInboxSingleClick}>
-            {/* avatar icon */}
-            <div className='w-auto mr-16 relative'>
-              <div className='absolute h-9 w-9 bg-main rounded-full flex items-center justify-center'>
-                <p className='text-white font-bold'>
-                  F
-                </p>
+
+            <hr />
+
+            <div className="my-6 grid grid-cols-[auto,1fr]">
+              {/* avatar icon */}
+              <div className="mr-8 w-auto">
+                <img
+                  src="/assets/default-avatar.png"
+                  alt="default avatar background"
+                  className="absolute z-10 ml-4 h-9 w-9"
+                />
+                <img
+                  src="/assets/default-avatar-bg.png"
+                  alt="default avatar"
+                  className="h-9 w-9"
+                />
+              </div>
+
+              {/* message header */}
+              <div className="flex">
+                <div className="w-9 flex-grow text-secondary">
+                  {/* mail header */}
+                  <p className="text-[16px] font-bold text-main">
+                    8405-Diana SALAZAR MUNGUIA
+                  </p>
+                  {/* sender */}
+                  <p className="text-[14px] font-bold">Cameron Phillips :</p>
+                  {/* message */}
+                  <p className="text-[14px]">
+                    I understand your initial concerns and thats very valid,
+                    Elizabeth. But you ...
+                    {/* add limitation for message later, that '...' is a max length bro */}
+                  </p>
+                </div>
+
+                <div className="flex gap-3 text-[14px]">
+                  {/* date */}
+                  <p>02/06/2021</p>
+                  {/* time */}
+                  <p>19:10</p>
+                </div>
               </div>
             </div>
-  
-            {/* message header */}
-            <div className='flex'>
-              <div className='flex-grow w-9 text-secondary'>
-                {/* sender */}
-                <p className='font-bold text-[16px] text-main'>
-                  FastVisa Support
-                </p>
-                {/* message */}
-                <p className='text-[14px]'>
-                  Hey there! Welcome to your inbox.
-                </p>
+
+            <hr />
+
+            <div
+              className="my-6 grid cursor-pointer grid-cols-[auto,1fr]"
+              onClick={handleInboxSingleClick}
+            >
+              {/* avatar icon */}
+              <div className="relative mr-16 w-auto">
+                <div className="absolute flex h-9 w-9 items-center justify-center rounded-full bg-main">
+                  <p className="font-bold text-white">F</p>
+                </div>
               </div>
-  
-              <div className='flex gap-3 text-[14px]'>
-                {/* date */}
-                <p>02/06/2021</p>
-                {/* time */}
-                <p>19:10</p>
+
+              {/* message header */}
+              <div className="flex">
+                <div className="w-9 flex-grow text-secondary">
+                  {/* sender */}
+                  <p className="text-[16px] font-bold text-main">
+                    FastVisa Support
+                  </p>
+                  {/* message */}
+                  <p className="text-[14px]">
+                    Hey there! Welcome to your inbox.
+                  </p>
+                </div>
+
+                <div className="flex gap-3 text-[14px]">
+                  {/* date */}
+                  <p>02/06/2021</p>
+                  {/* time */}
+                  <p>19:10</p>
+                </div>
               </div>
             </div>
-          </div>
-          {showInboxSingle && <InboxDetailSingle />}
+            {showInboxSingle && <InboxDetailSingle />}
           </>
         )}
       </div>

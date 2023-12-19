@@ -5,7 +5,7 @@ interface LoadingIndicatorProps {
   loadingText: string;
 }
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({loadingText}) => (
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ loadingText }) => (
   <div className={`flex flex-col ${styles["loader-container"]}`}>
     <div className={styles.spinner}></div>
     <p className="mt-3">{loadingText}</p>

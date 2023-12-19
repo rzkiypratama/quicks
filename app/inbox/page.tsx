@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import { useRouter } from "next/navigation";
 import styles from "../../public/styles/ButtonInbox.module.css";
@@ -14,27 +14,25 @@ const ButtonInbox: React.FC = () => {
   };
   return (
     <main>
-      <div className='border-l-2 border-white w-4/5 ml-auto h-screen'>
+      <div className="ml-auto h-screen w-4/5 border-l-2 border-white">
         <SearchBar />
-    <InboxView/>
-    <div className='fixed flex flex-row-reverse gap-5 bottom-4 right-4 z-10'>
-      <div className='relative'>
-        <div
-          className={`inbox-shadow ${styles["inbox-shadow"]}`}
-        ></div>
-        <img
-          src='/assets/buttonIcon/inboxactive-icon.png'
-          alt='inbox button'
-          className='h-[68px] w-[68px] object-cover transition-opacity opacity-100 cursor-pointer relative z-20'
-        />
-      </div>
-      <img
-        src='/assets/buttonIcon/taskinactive-icon.png'
-        alt='task button'
-        className='h-[68px] w-[68px] transition-opacity opacity-100 object-cover cursor-pointer relative z-10'
-        onClick={handleTaskClick}
-      />
-    </div>
+        <InboxView />
+        <div className="fixed bottom-4 right-4 z-10 flex flex-row-reverse gap-5">
+          <div className="relative">
+            <div className={`inbox-shadow ${styles["inbox-shadow"]}`}></div>
+            <img
+              src="/assets/buttonIcon/inboxactive-icon.png"
+              alt="inbox button"
+              className="relative z-20 h-[68px] w-[68px] cursor-pointer object-cover opacity-100 transition-opacity"
+            />
+          </div>
+          <img
+            src="/assets/buttonIcon/taskinactive-icon.png"
+            alt="task button"
+            className="relative z-10 h-[68px] w-[68px] cursor-pointer object-cover opacity-100 transition-opacity"
+            onClick={handleTaskClick}
+          />
+        </div>
       </div>
     </main>
   );

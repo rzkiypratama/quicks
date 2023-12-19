@@ -27,9 +27,7 @@ interface TodoItemProps {
   taskCreated: string;
   isComplete: boolean;
   onDelete: () => void;
-  setTasks: React.Dispatch<
-    React.SetStateAction<TasksData[]>
-  >;
+  setTasks: React.Dispatch<React.SetStateAction<TasksData[]>>;
 }
 
 const TaskContainer: React.FC<TodoItemProps> = ({
@@ -41,42 +39,25 @@ const TaskContainer: React.FC<TodoItemProps> = ({
   onDelete,
   setTasks,
 }) => {
-  const [isCollapsed, setIsCollapsed] =
-    useState<boolean>(false);
-  const [isTaskCompleted, setIsTaskCompleted] =
-    useState<boolean>(() => {
-      // Load the initial state from localStorage or use the provided initialIsComplete
-      const storedState = localStorage.getItem(
-        `task_${taskId}_isComplete`,
-      );
-      return storedState !== null
-        ? JSON.parse(storedState)
-        : initialIsComplete;
-    });
-  const [remainingDays, setRemainingDays] =
-    useState<number | null>(null);
-  const [taskCreatedDate, setTaskCreatedDate] =
-    useState<string | null>(null);
-  const [taskCreated, setTaskCreated] =
-    useState<string>(initialTaskCreated || "");
-  const [
-    isOptionsMenuOpen,
-    setIsOptionsMenuOpen,
-  ] = useState<boolean>(false);
-  const [isEditing, setIsEditing] =
-    useState(false);
-  const [
-    editedDescription,
-    setEditedDescription,
-  ] = useState(
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isTaskCompleted, setIsTaskCompleted] = useState<boolean>(() => {
+    // Load the initial state from localStorage or use the provided initialIsComplete
+    const storedState = localStorage.getItem(`task_${taskId}_isComplete`);
+    return storedState !== null ? JSON.parse(storedState) : initialIsComplete;
+  });
+  const [remainingDays, setRemainingDays] = useState<number | null>(null);
+  const [taskCreatedDate, setTaskCreatedDate] = useState<string | null>(null);
+  const [taskCreated, setTaskCreated] = useState<string>(
+    initialTaskCreated || "",
+  );
+  const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDescription, setEditedDescription] = useState(
     initialDescription || "No Description",
   );
-  const [editedTitle, setEditedTitle] =
-    useState<string>(title);
-  const [
-    editedTaskCreated,
-    setEditedTaskCreated,
-  ] = useState<string>(initialTaskCreated);
+  const [editedTitle, setEditedTitle] = useState<string>(title);
+  const [editedTaskCreated, setEditedTaskCreated] =
+    useState<string>(initialTaskCreated);
 
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -84,9 +65,7 @@ const TaskContainer: React.FC<TodoItemProps> = ({
 
   const handleCheckboxChange = () => {
     // Toggle the local state without making an API call
-    setIsTaskCompleted(
-      (prevIsComplete) => !prevIsComplete,
-    );
+    setIsTaskCompleted((prevIsComplete) => !prevIsComplete);
   };
 
   useEffect(() => {
@@ -101,11 +80,10 @@ const TaskContainer: React.FC<TodoItemProps> = ({
 
     if (taskCreated) {
       // Pastikan format tanggal 'DD/MM/YYYY'
-      const formattedTaskCreated =
-        taskCreated.replace(
-          /(\d{2})\/(\d{2})\/(\d{4})/,
-          "$3-$2-$1",
-        );
+      const formattedTaskCreated = taskCreated.replace(
+        /(\d{2})\/(\d{2})\/(\d{4})/,
+        "$3-$2-$1",
+      );
 
       // Setel taskCreatedDate
       setTaskCreatedDate(formattedTaskCreated);
@@ -121,26 +99,18 @@ const TaskContainer: React.FC<TodoItemProps> = ({
       if (!isNaN(taskCreatedDate.getTime())) {
         // Hitung selisih hari dengan membulatkan ke atas
         const timeDifference =
-          taskCreatedDate.getTime() -
-          currentDate.getTime();
-        const daysDifference = Math.ceil(
-          timeDifference / (1000 * 3600 * 24),
-        );
+          taskCreatedDate.getTime() - currentDate.getTime();
+        const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
         // Setel remainingDays sesuai dengan selisih hari
         setRemainingDays(daysDifference);
       } else {
-        console.error(
-          "Invalid taskCreated format:",
-          taskCreated,
-        );
+        console.error("Invalid taskCreated format:", taskCreated);
       }
     }
   }, [taskCreated]);
 
-  const handleTaskCreatedChange = (
-    newTaskCreated: string,
-  ) => {
+  const handleTaskCreatedChange = (newTaskCreated: string) => {
     // Update state taskCreated
     setTaskCreated(newTaskCreated);
   };
@@ -174,16 +144,12 @@ const TaskContainer: React.FC<TodoItemProps> = ({
         {
           headers: {
             "Content-Type": "application/json",
-            // Add other headers as needed
           },
         },
       );
 
       if (!response.data) {
-        console.error(
-          "Failed to update task:",
-          response.statusText,
-        );
+        console.error("Failed to update task:", response.statusText);
         return;
       }
 
@@ -192,18 +158,13 @@ const TaskContainer: React.FC<TodoItemProps> = ({
       // Update state tasks by replacing the old task with the updated task
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
-          task.id === updatedTask.id
-            ? updatedTask
-            : task,
+          task.id === updatedTask.id ? updatedTask : task,
         ),
       );
 
       setIsEditing(false);
     } catch (error) {
-      console.error(
-        "Error updating task:",
-        error,
-      );
+      console.error("Error updating task:", error);
     }
   };
 
@@ -214,48 +175,37 @@ const TaskContainer: React.FC<TodoItemProps> = ({
 
   useEffect(() => {
     setIsEditing(false);
-    setEditedDescription(
-      initialDescription || "No Description",
-    );
+    setEditedDescription(initialDescription || "No Description");
   }, [initialDescription]);
 
   return (
     <div>
       {/* Task header */}
-      <div className='flex justify-between items-center mb-4'>
-        <div className='flex gap-3'>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex gap-3">
           <input
-            type='checkbox'
-            className='mr-2'
+            type="checkbox"
+            className="mr-2"
             checked={isTaskCompleted}
             onChange={handleCheckboxChange}
           />
           <p
             className={`mr-2 ${
-              isTaskCompleted
-                ? "line-through text-gray-500"
-                : ""
+              isTaskCompleted ? "text-gray-500 line-through" : ""
             }`}
           >
             {title}
           </p>
         </div>
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           {/* date remaining */}
-          {remainingDays !== null &&
-            remainingDays > 0 && (
-              <p
-                className={`mr-2 ${
-                  remainingDays <= 5
-                    ? "text-red-500"
-                    : ""
-                }`}
-              >
-                {`${remainingDays} days left`}
-              </p>
-            )}
+          {remainingDays !== null && remainingDays > 0 && (
+            <p className={`mr-2 ${remainingDays <= 5 ? "text-red-500" : ""}`}>
+              {`${remainingDays} days left`}
+            </p>
+          )}
           {taskCreated && (
-            <p className='mr-2'>
+            <p className="mr-2">
               {format(
                 utcToZonedTime(
                   new Date(
@@ -270,27 +220,17 @@ const TaskContainer: React.FC<TodoItemProps> = ({
               )}
             </p>
           )}
-          <span
-            className='mr-2 cursor-pointer'
-            onClick={handleToggleCollapse}
-          >
-            {isCollapsed ? (
-              <FaAngleDown />
-            ) : (
-              <FaAngleUp />
-            )}
+          <span className="mr-2 cursor-pointer" onClick={handleToggleCollapse}>
+            {isCollapsed ? <FaAngleDown /> : <FaAngleUp />}
           </span>
 
-          <span
-            className={`mr-2 cursor-pointer `}
-            onClick={toggleOptionsMenu}
-          >
+          <span className={`mr-2 cursor-pointer `} onClick={toggleOptionsMenu}>
             <FaEllipsisH />
           </span>
           {isOptionsMenuOpen && (
-            <div className='absolute right-0 mt-16 flex flex-col items-start border border-[#bdbdbd] rounded-md p-2 pr-10 mr-9 bg-white'>
+            <div className="absolute right-0 mr-9 mt-16 flex flex-col items-start rounded-md border border-[#bdbdbd] bg-white p-2 pr-10">
               <p
-                className='text-red-500 cursor-pointer'
+                className="cursor-pointer text-red-500"
                 onClick={handleDeleteClick}
               >
                 Delete
@@ -302,30 +242,23 @@ const TaskContainer: React.FC<TodoItemProps> = ({
       {/* Task item */}
       {!isCollapsed && (
         <div>
-          <div className='flex items-center mb-4 gap-3'>
-            <div className='mr-6'></div>
+          <div className="mb-4 flex items-center gap-3">
+            <div className="mr-6"></div>
             <span>
-              <FaRegClock color='#2F80ED' />
+              <FaRegClock color="#2F80ED" />
             </span>
             {taskCreatedDate && (
               <input
-                type='date'
-                className='ml-2 p-2 border border-gray-300 rounded'
-                value={taskCreated.substring(
-                  0,
-                  10,
-                )}
-                onChange={(e) =>
-                  handleTaskCreatedChange(
-                    e.target.value,
-                  )
-                }
+                type="date"
+                className="ml-2 rounded border border-gray-300 p-2"
+                value={taskCreated.substring(0, 10)}
+                onChange={(e) => handleTaskCreatedChange(e.target.value)}
               />
             )}
 
-            <div className='-ml-[10.5rem] bg-white pr-4 select-none'>
+            <div className="-ml-[10.5rem] select-none bg-white pr-4">
               {taskCreated && (
-                <p className='mr-2'>
+                <p className="mr-2">
                   {format(
                     utcToZonedTime(
                       new Date(
@@ -342,50 +275,39 @@ const TaskContainer: React.FC<TodoItemProps> = ({
               )}
             </div>
           </div>
-          <div className='flex items-center mb-4 gap-3'>
-            <div className='mr-6'></div>
+          <div className="mb-4 flex items-center gap-3">
+            <div className="mr-6"></div>
             <span>
               <FaPencilAlt
-                color={
-                  editedDescription
-                    ? "#2F80ED"
-                    : "gray"
-                }
+                color={editedDescription ? "#2F80ED" : "gray"}
                 onClick={handleEditClick}
                 style={{ cursor: "pointer" }}
               />
             </span>
             {isEditing ? (
-              <div className='flex items-center gap-3'>
+              <div className="flex items-center gap-3">
                 <input
-                  type='text'
-                  className='border border-gray-300 rounded p-2 w-'
+                  type="text"
+                  className="w- rounded border border-gray-300 p-2"
                   value={editedDescription}
-                  onChange={(e) =>
-                    setEditedDescription(
-                      e.target.value,
-                    )
-                  }
+                  onChange={(e) => setEditedDescription(e.target.value)}
                 />
                 <button
-                  className='bg-blue-500 text-white px-4 py-2 rounded-md'
-                  onClick={() =>
-                    handleSaveClick()
-                  }
+                  className="rounded-md bg-blue-500 px-4 py-2 text-white"
+                  onClick={() => handleSaveClick()}
                 >
                   Save
                 </button>
                 <button
-                  className='bg-gray-500 text-white px-4 py-2 rounded-md'
+                  className="rounded-md bg-gray-500 px-4 py-2 text-white"
                   onClick={handleCancelClick}
                 >
                   Cancel
                 </button>
               </div>
             ) : (
-              <p className='ml-2 mr-[60px]'>
-                {editedDescription ||
-                  "No Description"}
+              <p className="ml-2 mr-[60px]">
+                {editedDescription || "No Description"}
               </p>
             )}
           </div>
