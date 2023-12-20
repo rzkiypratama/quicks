@@ -46,13 +46,13 @@ const ButtonUnclicked: React.FC<ButtonMainProps> = ({
           <img
             src="/assets/buttonIcon/inboxinactive-icon.png"
             alt="inbox button"
-            className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity"
+            className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity delay-200"
             onClick={handleInboxClick}
           />
           <img
             src="/assets/buttonIcon/taskinactive-icon.png"
             alt="task button"
-            className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity"
+            className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity delay-400"
             onClick={handleTaskClick}
           />
         </>
