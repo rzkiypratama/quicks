@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import SearchBar from "./component/SearchBar";
 import ButtonContainer from "./component/button/ButtonContainer";
@@ -13,20 +13,19 @@ const Home: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
   return (
-    <main className="font-Lato">
-      <div className="w-screen h-screen relative overflow-hidden">
+    <main className="container m-auto font-Lato">
+      <div className="relative h-screen w-screen overflow-hidden">
         {showImage && (
-          <div className="relative w-full h-full z-20">
+          <div className="relative z-20 h-full w-full">
             <img
               src="assets/Cover.png"
               alt="Cover Image"
-              className="w-full h-full object-cover transition-opacity opacity-100 absolute top-0 left-0"
+              className="absolute left-0 top-0 h-full w-full object-cover opacity-100 transition-opacity"
             />
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            </div>
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"></div>
           </div>
         )}
-        <div className="border-l-2 border-white w-4/5 ml-auto h-full relative z-10">
+        <div className="relative z-10 ml-auto h-full w-4/5 border-l-2 border-white">
           <SearchBar />
           {/* button icon section */}
           <ButtonContainer />
@@ -35,6 +34,6 @@ const Home: React.FC = () => {
       </div>
     </main>
   );
-        }
+};
 
 export default Home;
