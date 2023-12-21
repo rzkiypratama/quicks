@@ -4,6 +4,8 @@ import Head from "next/head";
 import TaskContainer from "./TaskContainer";
 import LoadingIndicator from "../Loader";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export interface TasksData {
   id: number;
@@ -55,6 +57,7 @@ const TodoPage: React.FC = () => {
           },
         }),
       });
+      toast.success("Task Created!");
 
       if (!response.ok) {
         // Handle error scenarios, e.g., display an error message
@@ -139,7 +142,19 @@ const TodoPage: React.FC = () => {
       <Head>
         <title>Todo List</title>
       </Head>
-      <div className="sticky top-0 w-full bg-white px-[34px] pt-5">
+      <ToastContainer
+        position="top-right"
+        autoClose={1750}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <div className="sticky top-0 z-20 w-full bg-white px-[34px] pt-5">
         <div className="mb-4 flex justify-between">
           <div>
             <select
@@ -187,6 +202,16 @@ const TodoPage: React.FC = () => {
                 setTasks={setTasks}
                 taskId={task.id}
                 isComplete={false}
+                stickerOptions={[
+                  "Important ASAP",
+                  "Client Related",
+                  "Self Task",
+                  "Offline Meeting",
+                  "Virtual Meeting",
+                  "ASAP",
+                  "Appointments",
+                  "Court Related",
+                ]}
               />
               <hr className="border-1 my-4" />
             </div>
