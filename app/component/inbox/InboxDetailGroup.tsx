@@ -119,6 +119,7 @@ const InboxViewGroup: React.FC = () => {
       sender: "You",
       message: newMessage,
       time: currentTime,
+      isNew: true,
     };
     setChatDataGroup([...chatDataGroupState, newChat]);
     localStorage.setItem(
@@ -316,7 +317,7 @@ const InboxViewGroup: React.FC = () => {
                         ? "rounded-lg bg-[#FCEED3] p-4"
                         : chat.sender === "Pratama"
                           ? "rounded-lg bg-[#D2F2EA] p-4"
-                          : "rounded-lg bg-[#b2b1b1] p-4"
+                          : "rounded-lg bg-[#F2F2F2] p-4"
                   }
                 >
                   <p>{chat.message}</p>
@@ -332,7 +333,7 @@ const InboxViewGroup: React.FC = () => {
             <div
               className="fixed z-50 m-auto mx-72 w-36 cursor-pointer rounded-md bg-[#E9F3FF] text-center"
               style={{
-                top: "79%",
+                top: "75%",
                 transform: "translateY(-50%)",
               }}
               onClick={handleBadgeClick}

@@ -315,7 +315,7 @@ const InboxViewSingle: React.FC = () => {
                   className={
                     chat.sender === "You"
                       ? "rounded-lg bg-purple-200 p-4"
-                      : "rounded-lg bg-[#b2b1b1] p-4"
+                      : "rounded-lg bg-[#F2F2F2] p-4"
                   }
                 >
                   <p>{chat.message}</p>
@@ -331,7 +331,7 @@ const InboxViewSingle: React.FC = () => {
             <div
               className="fixed z-50 m-auto mx-72 w-36 cursor-pointer rounded-md bg-[#E9F3FF] text-center"
               style={{
-                top: "79%",
+                top: "75%",
                 transform: "translateY(-50%)",
               }}
               onClick={handleBadgeClick}

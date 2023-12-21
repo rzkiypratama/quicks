@@ -6,18 +6,20 @@
   border: 1px solid #333;
   border-radius: 5px;
   overflow: hidden;
-  flex-direction: row-reverse; /* Menambahkan properti untuk membalik arah flex */
+  flex-direction: row-reverse;
 }
 
 .searchInput {
   flex: 1;
-  padding: 8px;
+  padding: 10px;
   border: none;
   outline: none;
 }
 
 .searchIcon {
-  width: 18px;
-  height: 18px;
-  margin-right: 10px; /* Menggeser ikon ke kanan */
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+  background-repeat: no-repeat;
+  object-fit: cover;
 }

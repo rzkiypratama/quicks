@@ -67,8 +67,34 @@ const TaskContainer: React.FC<TaskItemProps> = ({
     );
   }, [isTaskCompleted, taskId]);
 
-  const handleTaskCreatedChange = (newTaskCreated: string) => {
-    setTaskCreated(newTaskCreated);
+  const handleTaskCreatedChange = async (newTaskCreated: string) => {
+    try {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
+        {
+          data: {
+            taskCreated: newTaskCreated,
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.data) {
+        console.error("Failed to update task date:", response.statusText);
+        return;
+      }
+
+      // Update the local state with the new date
+      setTaskCreated(newTaskCreated);
+
+      toast.success("Task date updated!");
+    } catch (error) {
+      console.error("Error updating task date:", error);
+    }
   };
 
   const handleDeleteClick = () => {
@@ -198,8 +224,8 @@ const TaskContainer: React.FC<TaskItemProps> = ({
     "Self Task": "#CFCEF9",
     "Offline Meeting": "#FDCFA4",
     "Virtual Meeting": "#F9E9C3",
-    "ASAP": "#AFEBDB",
-    "Appointments": "#F9E0FD",
+    ASAP: "#AFEBDB",
+    Appointments: "#F9E0FD",
     "Court Related": "#9DD0ED",
   };
 
@@ -349,7 +375,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
               </p>
             )}
           </div>
-          
+
           <div className="mb-4 flex items-center gap-3">
             <div className="mr-2"></div>
             <div className="flex w-full items-center rounded-md bg-[#f9f9f9] px-4 py-4">

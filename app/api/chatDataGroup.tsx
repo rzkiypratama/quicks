@@ -31,6 +31,12 @@ const chatDataGroup: ChatData[] = [
     message: "Yomaan",
     time: "19:32",
   },
+  {
+    id: 5,
+    sender: "Cameron Phillips",
+    message: "P impo join",
+    time: "19:32",
+  },
 ];
 
 export default chatDataGroup;

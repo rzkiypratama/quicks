@@ -13,7 +13,7 @@ const TodoPage: React.FC = () => {
   const [showNewTaskModal, setShowNewTaskModal] = useState<boolean>(false);
   const [tasks, setTasks] = useState<TasksData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  
+
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
@@ -74,6 +74,7 @@ const TodoPage: React.FC = () => {
         return;
       }
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+      toast.error("Task Deleted!");
     } catch (error) {
       console.error("Error deleting task:", error);
     }
