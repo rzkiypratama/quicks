@@ -6,11 +6,18 @@ import ButtonContainer from "./component/button/ButtonContainer";
 const Home: React.FC = () => {
   const [showImage, setShowImage] = useState(true);
 
-  useEffect(() => {
-    const isImageShown = sessionStorage.getItem("showImage");
+   useEffect(() => {
+    const isImageShown = localStorage.getItem("showImage");
+
     if (!isImageShown) {
       setShowImage(true);
-      sessionStorage.setItem("showImage", "true");
+      // Set a timeout to hide the image
+      const timeoutId = setTimeout(() => {
+        setShowImage(false);
+        sessionStorage.setItem("showImage", "false");
+        localStorage.setItem("showImage", "false");
+      }, 1500);
+      return () => clearTimeout(timeoutId);
     } else {
       setShowImage(false);
     }
