@@ -24,9 +24,9 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <main className="container m-auto font-Lato">
-      <div className="relative h-screen w-screen overflow-hidden">
-        {showImage && (
+    <main className="m-auto font-Lato h-screen">
+      <div className="relative h-screen overflow-hidden">
+        {/* {showImage && (
           <div className="relative z-20 h-full w-full">
             <img
               src="assets/Cover.png"
@@ -35,7 +35,7 @@ const Home: React.FC = () => {
             />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"></div>
           </div>
-        )}
+        )} */}
         <div className="relative z-10 ml-auto h-full w-4/5 border-l-2 border-white">
           <SearchBar />
           {/* button icon section */}
