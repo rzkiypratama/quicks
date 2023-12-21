@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 interface ButtonMainProps {
   onInboxClick: () => void;
@@ -29,7 +30,7 @@ const ButtonUnclicked: React.FC<ButtonMainProps> = ({
 
   return (
     <div
-      className={`fixed bottom-4 right-4 z-10 flex flex-row-reverse items-center justify-center gap-5`}
+      className={`fixed bottom-4 right-4 z-10 flex flex-row-reverse items-center justify-center gap-2`}
     >
       <img
         src="/assets/buttonIcon/main-button.png"
@@ -40,20 +41,50 @@ const ButtonUnclicked: React.FC<ButtonMainProps> = ({
         onClick={handleMainButtonClick}
       />
       {isTaskVisible && (
-        <>
-          <img
+        <motion.div className="flex items-center gap-2">
+          <motion.img
+            initial={{
+              x: 10,
+              opacity: 0,
+              scale: 1,
+              rotate: 30,
+            }}
+            animate={{
+              x: 0,
+              opacity: 1,
+              scale: 1,
+              rotate: 0,
+            }}
+            transition={{
+              duration: 0.2,
+            }}
             src="/assets/buttonIcon/inboxinactive-icon.png"
             alt="inbox button"
             className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity delay-200"
             onClick={handleInboxClick}
           />
-          <img
+          <motion.img
+            initial={{
+              x: 10,
+              opacity: 0,
+              scale: 1,
+              rotate: 30,
+            }}
+            animate={{
+              x: 0,
+              opacity: 1,
+              scale: 1,
+              rotate: 0,
+            }}
+            transition={{
+              duration: 0.2,
+            }}
             src="/assets/buttonIcon/taskinactive-icon.png"
             alt="task button"
-            className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity delay-400"
+            className="delay-400 h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity"
             onClick={handleTaskClick}
           />
-        </>
+        </motion.div>
       )}
     </div>
   );
