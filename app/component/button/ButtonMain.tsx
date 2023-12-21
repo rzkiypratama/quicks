@@ -16,12 +16,10 @@ const ButtonUnclicked: React.FC<ButtonMainProps> = ({
   const router = useRouter();
 
   const handleInboxClick = () => {
-    // Navigate to the ButtonInbox component
     router.push("/inbox");
   };
 
   const handleTaskClick = () => {
-    // Navigate to the ButtonInbox component
     router.push("/task");
   };
 

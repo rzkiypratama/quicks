@@ -9,9 +9,13 @@ const ButtonInbox: React.FC = () => {
   const router = useRouter();
 
   const handleTaskClick = () => {
-    // Navigate to the ButtonInbox component
     router.push("/task");
   };
+
+  const handleBackClick = () => {
+    router.push("/");
+  };
+
   return (
     <main>
       <div className="ml-auto h-screen w-4/5 border-l-2 border-white">
@@ -19,7 +23,7 @@ const ButtonInbox: React.FC = () => {
         <InboxView />
         <div className="fixed bottom-4 right-4 z-10 flex flex-row-reverse gap-5">
           <div className="relative">
-            <div className={`inbox-shadow ${styles["inbox-shadow"]}`}></div>
+            <div className={`inbox-shadow cursor-pointer ${styles["inbox-shadow"]}`} onClick={handleBackClick}></div>
             <img
               src="/assets/buttonIcon/inboxactive-icon.png"
               alt="inbox button"

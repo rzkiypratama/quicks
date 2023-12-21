@@ -47,7 +47,6 @@ const TodoPage: React.FC = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            // Include any additional headers as needed
           },
         },
       );
@@ -55,18 +54,11 @@ const TodoPage: React.FC = () => {
       toast.success("Task Created!");
 
       if (!response.data) {
-        // Handle error scenarios, e.g., display an error message
         console.error("Failed to add task:", response.statusText);
         return;
       }
-
-      // Assuming your Strapi response includes the created task data
       const newTask = response.data.data;
-
-      // Update state tasks by adding the new task
       setTasks((prevTasks) => [...prevTasks, newTask]);
-
-      // Close the modal after adding the task
       setShowNewTaskModal(false);
     } catch (error) {
       console.error("Error adding task:", error);
@@ -75,9 +67,8 @@ const TodoPage: React.FC = () => {
 
   const handleTaskDelete = async (taskId: number) => {
     try {
-      // Make a DELETE request to delete the task by ID
       const response = await axios.delete(
-        `${process.env.QUICK_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
       );
 
       if (!response.data) {
@@ -99,9 +90,8 @@ const TodoPage: React.FC = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-
         const response = await axios.get(
-          `${process.env.QUICK_PUBLIC_BACKEND_URL}/task-lists`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/task-lists`,
         );
 
         if (!response.data) {
@@ -126,7 +116,7 @@ const TodoPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-24 right-4 h-[80vh] w-2/3 overflow-y-auto bg-white  tracking-wide shadow-md lg:w-[734px]">
+    <div className="fixed bottom-24 mx-4 h-[80vh] w-full overflow-y-auto bg-white tracking-wide shadow-md  lg:right-4 lg:mx-0 lg:w-[734px]">
       <Head>
         <title>Todo List</title>
       </Head>

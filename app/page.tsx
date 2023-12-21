@@ -7,11 +7,15 @@ const Home: React.FC = () => {
   const [showImage, setShowImage] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const isImageShown = sessionStorage.getItem("showImage");
+    if (!isImageShown) {
+      setShowImage(true);
+      sessionStorage.setItem("showImage", "true");
+    } else {
       setShowImage(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    }
   }, []);
+
   return (
     <main className="container m-auto font-Lato">
       <div className="relative h-screen w-screen overflow-hidden">

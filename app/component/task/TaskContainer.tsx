@@ -81,7 +81,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
   const handleSaveClick = async () => {
     try {
       const response = await axios.put(
-        `${process.env.QUICK_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
         {
           data: {
             title: editedTitle,
@@ -200,8 +200,8 @@ const TaskContainer: React.FC<TaskItemProps> = ({
     "Self Task": "#CFCEF9",
     "Offline Meeting": "#FDCFA4",
     "Virtual Meeting": "#F9E9C3",
-    ASAP: "#AFEBDB",
-    Appointments: "#F9E0FD",
+    "ASAP": "#AFEBDB",
+    "Appointments": "#F9E0FD",
     "Court Related": "#9DD0ED",
   };
 
@@ -405,6 +405,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
                         margin: "10px",
                         color: "#4f4f4f",
                         fontWeight: "600",
+                        fontSize: "14px"
                       }}
                       className={
                         selectedStickers.includes(option) ? "selected" : ""
