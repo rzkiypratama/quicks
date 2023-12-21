@@ -1,13 +1,16 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import chatData, { ChatData } from "../../api/chatDataSingle";
-import NewMessageLine from "../NewMessageLine";
 import InboxView from "./InboxView";
 import { FaArrowLeft, FaXmark } from "react-icons/fa6";
+import {
+  fetchChatData,
+  sendChatMessage,
+  deleteChatMessage,
+} from "../../api/inboxApi";
+import { ChatDatas } from "../../api/Types";
 
 const InboxViewSingle: React.FC = () => {
-  const [chatDataSingleState, setChatDataSingle] =
-    useState<ChatData[]>(chatData);
+  const [chatDataSingleApi, setChatDataApi] = useState<ChatDatas[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showInboxDetail, setShowInboxDetail] = useState(false);
   const [selectedChatIndex, setSelectedChatIndex] = useState<number | null>(
@@ -68,26 +71,42 @@ const InboxViewSingle: React.FC = () => {
   // new message line
   const isNewMessage = true;
 
-  const handleDeleteClick = (
+  const handleDeleteClick = async (
     index: number,
     event: React.MouseEvent<HTMLParagraphElement>,
   ) => {
     event.preventDefault();
-    const updatedChatData = [...chatDataSingleState];
 
-    // Hapus pesan dari array
-    updatedChatData.splice(index, 1);
+    // Dapatkan id pesan yang akan dihapus
+    const chatIdToDelete = chatDataSingleApi[index]?.id;
 
-    // Update state untuk menyimpan perubahan
-    setChatDataSingle(updatedChatData);
+    if (!chatIdToDelete) {
+      console.error("Invalid chat ID");
+      return;
+    }
 
-    // Update localStorage untuk menyimpan perubahan
-    localStorage.setItem(
-      "chatDataSingleState",
-      JSON.stringify(updatedChatData),
-    );
+    try {
+      // Panggil fungsi untuk menghapus pesan dari server
+      await deleteChatMessage(chatIdToDelete);
 
-    setSelectedChatIndex(null); // Menyembunyikan opsi setelah mengklik delete
+      // Hapus pesan dari array
+      const updatedChatData = [...chatDataSingleApi];
+      updatedChatData.splice(index, 1);
+
+      // Update state untuk menyimpan perubahan
+      setChatDataApi(updatedChatData);
+
+      // Update localStorage untuk menyimpan perubahan
+      localStorage.setItem(
+        "chatDataSingleApi",
+        JSON.stringify(updatedChatData),
+      );
+
+      setSelectedChatIndex(null); // Menyembunyikan opsi setelah mengklik delete
+    } catch (error) {
+      console.error("Error deleting chat message", error);
+      // Handle error, mungkin dengan menampilkan pesan kesalahan ke pengguna
+    }
   };
 
   const handleReplyClick = (
@@ -95,7 +114,7 @@ const InboxViewSingle: React.FC = () => {
     event: React.MouseEvent<HTMLParagraphElement>,
   ) => {
     event.preventDefault();
-    setReplyMessage(chatDataSingleState[index].message);
+    setReplyMessage(chatDataSingleApi[index].attributes.message);
     setIsReplying(true);
   };
 
@@ -106,49 +125,41 @@ const InboxViewSingle: React.FC = () => {
   };
 
   // testing to add new chat as sender
-  const sendMessage = () => {
+  const sendMessage = async () => {
+    console.log("newMessage:", newMessage);
+  
     if (!newMessage.trim()) {
-      return; // Tidak mengirim pesan kosong
+      return;
     }
-
+  
     const currentDatetime = new Date();
     const hours = currentDatetime.getHours();
     const minutes = currentDatetime.getMinutes();
     const ampm = hours >= 12 ? "PM" : "AM";
-
-    // Convert hours to 12-hour format
+  
     const hours12 = hours % 12 || 12;
-
     const currentTime = `${hours12}:${minutes} ${ampm}`;
-
-    // Update the sender name to something other than "You" to clearly identify the receiver in the front guys
-    const newChat = {
-      id: chatDataSingleState.length + 1,
+  
+    const messageData = {
       sender: "You",
-      message: newMessage,
+      message: newMessage || "",
       time: currentTime,
     };
-
-    // Update state untuk menyimpan perubahan
-    setChatDataSingle([...chatDataSingleState, newChat]);
-
-    // Update localStorage untuk menyimpan perubahan
-    localStorage.setItem(
-      "chatDataSingleState",
-      JSON.stringify([...chatDataSingleState, newChat]),
-    );
-
-    // Clear the input
-    setNewMessage("");
+  
+    try {
+      const newChat = await sendChatMessage(messageData);
+  
+      if (newChat) {
+        // Perbarui state chatDataSingleApi
+        setChatDataApi((prevData) => [...prevData, newChat]);
+      }
+  
+      setNewMessage("");
+    } catch (error) {
+      console.error("Error sending message", error);
+    }
   };
-
-  useEffect(() => {
-    // Load reply messages from local storage
-    const storedReplyMessages = JSON.parse(
-      localStorage.getItem("replyMessages") || "{}",
-    );
-    setReplyMessages(storedReplyMessages);
-  }, []);
+  
 
   const sendReply = () => {
     if (!replyDraft.trim() || selectedChatIndex === null) {
@@ -160,31 +171,26 @@ const InboxViewSingle: React.FC = () => {
 
     // Create a new chat object for your reply
     const newReplyChat = {
-      id: chatDataSingleState.length + 2,
-      sender: "You",
-      message: replyDraft,
-      time: currentTime,
+      id: chatDataSingleApi.length + 2,
+      attributes: {
+        sender: "You",
+        message: replyDraft,
+        time: currentTime,
+      },
     };
 
     // Create a new chat object for the replied message
-    const repliedMessage = chatDataSingleState[selectedChatIndex]?.message;
+    const repliedMessage =
+      chatDataSingleApi[selectedChatIndex]?.attributes?.message;
 
     // Update state untuk menyimpan perubahan
-    setChatDataSingle([...chatDataSingleState, newReplyChat]);
+    setChatDataApi([...chatDataSingleApi, newReplyChat]);
 
-    // Update localStorage untuk menyimpan perubahan
-    localStorage.setItem(
-      "chatDataSingleState",
-      JSON.stringify([...chatDataSingleState, newReplyChat]),
-    );
-
-    // Update replyMessages in localStorage
-    const updatedReplyMessages = {
+    // Update repliedMessages state
+    setReplyMessages({
       ...replyMessages,
       [newReplyChat.id]: repliedMessage,
-    };
-    setReplyMessages(updatedReplyMessages);
-    localStorage.setItem("replyMessages", JSON.stringify(updatedReplyMessages));
+    });
 
     // Reset reply state
     setReplyDraft("");
@@ -197,10 +203,9 @@ const InboxViewSingle: React.FC = () => {
     // Ambil data dari LocalStorage saat komponen dipasang
     const storedChatData = localStorage.getItem("chatDataSingleState");
     if (storedChatData) {
-      setChatDataSingle(JSON.parse(storedChatData));
+      setChatDataApi(JSON.parse(storedChatData));
     } else {
       // Jika tidak ada data di LocalStorage, gunakan data default dari chatData
-      setChatDataSingle(chatData);
     }
 
     // Retrieve reply messages from localStorage
@@ -209,6 +214,24 @@ const InboxViewSingle: React.FC = () => {
       setReplyMessages(JSON.parse(storedReplyMessages));
     }
   }, []);
+
+    useEffect(() => {
+    const fetchChatDataFromAPI = async () => {
+      try {
+        const data = await fetchChatData();
+        setChatDataApi(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching chat data", error);
+      }
+    };
+
+    fetchChatDataFromAPI();
+  }, []);
+
+  useEffect(() => {
+    // Lakukan sesuatu setelah state berubah (misalnya, perbarui UI)
+  }, [chatDataSingleApi]);
 
   return (
     <main className="fixed bottom-24 right-4 z-40 h-[80vh] w-[734px] rounded-md bg-white tracking-wide shadow-md">
@@ -235,39 +258,40 @@ const InboxViewSingle: React.FC = () => {
           ref={chatContainerRef}
           className="flex-1 space-y-4 overflow-y-auto p-5"
         >
-          {chatDataSingleState.map((chat, index) => (
+          {chatDataSingleApi.map((chat, index) => (
             <div key={index}>
-              {chat.isNew && <NewMessageLine isNewMessage={isNewMessage} />}
+              {/* {chat.isNew && <NewMessageLine isNewMessage={isNewMessage} />} */}
               <div
                 className={
-                  chat.sender === "You"
+                  chat?.attributes?.sender === "You"
                     ? "items-end text-right font-semibold"
                     : "items-end text-left font-semibold"
                 }
               >
-                <p className="text-gray-600">{chat.sender}</p>
+                <p className="text-gray-600">{chat?.attributes?.sender}</p>
               </div>
 
               {/* replied chat bubble without sender */}
 
               {/* Bubble for the replied message */}
               <div className="flex justify-end">
-                {chat.sender === "You" && replyMessages[chat.id] && (
-                  <div className="mb-2 rounded-lg bg-[#e0e0e0] p-4">
-                    <p>{replyMessages[chat.id]}</p>
-                  </div>
-                )}
+                {chat?.attributes?.sender === "You" &&
+                  replyMessages[chat.id] && (
+                    <div className="mb-2 rounded-lg bg-[#e0e0e0] p-4">
+                      <p>{replyMessages[chat.id]}</p>
+                    </div>
+                  )}
               </div>
 
               {/* chat bubble dan chat option */}
               <div
                 className={
-                  chat.sender === "You"
+                  chat?.attributes?.sender === "You"
                     ? "flex justify-end gap-3"
                     : "mr-20 flex flex-row-reverse justify-end gap-3"
                 }
               >
-                {chat.sender === "You" ? (
+                {chat?.attributes?.sender === "You" ? (
                   <div>
                     {/* container untuk chat option, edit, dan delete */}
                     <div className="relative">
@@ -336,15 +360,17 @@ const InboxViewSingle: React.FC = () => {
                 {/* chat bubble */}
                 <div
                   className={
-                    chat.sender === "You"
+                    chat?.attributes?.sender === "You"
                       ? "rounded-lg bg-purple-200 p-4"
                       : "rounded-lg bg-[#b2b1b1] p-4"
                   }
                 >
-                  <p>{chat.message}</p>
+                  <p>{chat?.attributes?.message}</p>
 
                   {/* time inside chat bubble */}
-                  <p className="mt-2 text-xs text-gray-600">{chat.time}</p>
+                  <p className="mt-2 text-xs text-gray-600">
+                    {chat?.attributes?.time}
+                  </p>
                 </div>
               </div>
             </div>
@@ -406,12 +432,12 @@ const InboxViewSingle: React.FC = () => {
             className="rounded-md bg-blue-500 px-4 py-2 text-white"
             onClick={isReplying ? sendReply : sendMessage}
           >
-            {isReplying ? "Send" : "Send"}
+            Send
           </button>
         </div>
       </div>
     </main>
   );
-}
+};
 
 export default InboxViewSingle;

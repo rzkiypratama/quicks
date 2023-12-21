@@ -3,22 +3,13 @@ import {ChatDatas, NewChatMessage, ReplyData} from './Types'
 
 const API_URL = 'http://localhost:1337/api';
 
+// INBOX API
 export const fetchChatData = async (): Promise<ChatDatas[]> => {
   try {
     const response = await axios.get<{ data: ChatDatas[] }>(`${API_URL}/inboxes`);
     return response.data.data;
   } catch (error) {
     console.error('Error fetching chat data', error);
-    return [];
-  }
-};
-
-export const fetchReplyMessages = async (): Promise<ReplyData[]> => {
-  try {
-    const response = await axios.get<{ data: ReplyData[] }>(`${API_URL}/replies`);
-    return response.data.data;
-  } catch (error) {
-    console.error('Error fetching reply data', error);
     return [];
   }
 };
@@ -41,6 +32,17 @@ export const deleteChatMessage = async (chatId: number): Promise<void> => {
     await axios.delete(`${API_URL}/inboxes/${chatId}`);
   } catch (error) {
     console.error('Error deleting chat message', error);
+  }
+};
+
+// REPLY API
+export const fetchReplyMessages = async (): Promise<ReplyData[]> => {
+  try {
+    const response = await axios.get<{ data: ReplyData[] }>(`${API_URL}/replies`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching reply data', error);
+    return [];
   }
 };
 
