@@ -9,31 +9,12 @@ import {
 } from "react-icons/fa";
 import { format } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
-import axios from "axios";
+import { TaskItemProps } from "@/app/api/Types";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
-export interface TasksData {
-  id: number;
-  attributes: {
-    title: string;
-    description: string;
-    taskCreated: string;
-  };
-}
-
-interface TodoItemProps {
-  taskId: number;
-  title: string;
-  description: string;
-  taskCreated: string;
-  isComplete: boolean;
-  onDelete: () => void;
-  setTasks: React.Dispatch<React.SetStateAction<TasksData[]>>;
-  stickerOptions: string[];
-}
-
-const TaskContainer: React.FC<TodoItemProps> = ({
+const TaskContainer: React.FC<TaskItemProps> = ({
   taskId,
   title,
   description: initialDescription,
@@ -45,7 +26,6 @@ const TaskContainer: React.FC<TodoItemProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isTaskCompleted, setIsTaskCompleted] = useState<boolean>(() => {
-    // Load the initial state from localStorage or use the provided initialIsComplete
     const storedState = localStorage.getItem(`task_${taskId}_isComplete`);
     return storedState !== null ? JSON.parse(storedState) : initialIsComplete;
   });
@@ -67,11 +47,13 @@ const TaskContainer: React.FC<TodoItemProps> = ({
     setIsCollapsed(!isCollapsed);
   };
 
-  const handleCheckboxChange = () => {
-    // Toggle the local state without making an API call
-    setIsTaskCompleted((prevIsComplete) => !prevIsComplete);
+  const toggleOptionsMenu = () => {
+    setIsOptionsMenuOpen(!isOptionsMenuOpen);
   };
 
+  const handleCheckboxChange = () => {
+    setIsTaskCompleted((prevIsComplete) => !prevIsComplete);
+  };
   useEffect(() => {
     localStorage.setItem(
       `task_${taskId}_isComplete`,
@@ -79,48 +61,8 @@ const TaskContainer: React.FC<TodoItemProps> = ({
     );
   }, [isTaskCompleted, taskId]);
 
-  useEffect(() => {
-    const currentDate = new Date();
-
-    if (taskCreated) {
-      // Pastikan format tanggal 'DD/MM/YYYY'
-      const formattedTaskCreated = taskCreated.replace(
-        /(\d{2})\/(\d{2})\/(\d{4})/,
-        "$3-$2-$1",
-      );
-
-      // Setel taskCreatedDate
-      setTaskCreatedDate(formattedTaskCreated);
-
-      // Konversi tanggal taskCreated dari UTC ke zona waktu lokal (GMT+7)
-      const timeZone = "Asia/Jakarta";
-      const taskCreatedDate = utcToZonedTime(
-        new Date(formattedTaskCreated),
-        timeZone,
-      );
-
-      // Cek apakah tanggal taskCreated valid
-      if (!isNaN(taskCreatedDate.getTime())) {
-        // Hitung selisih hari dengan membulatkan ke atas
-        const timeDifference =
-          taskCreatedDate.getTime() - currentDate.getTime();
-        const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-
-        // Setel remainingDays sesuai dengan selisih hari
-        setRemainingDays(daysDifference);
-      } else {
-        console.error("Invalid taskCreated format:", taskCreated);
-      }
-    }
-  }, [taskCreated]);
-
   const handleTaskCreatedChange = (newTaskCreated: string) => {
-    // Update state taskCreated
     setTaskCreated(newTaskCreated);
-  };
-
-  const toggleOptionsMenu = () => {
-    setIsOptionsMenuOpen(!isOptionsMenuOpen);
   };
 
   const handleDeleteClick = () => {
@@ -131,16 +73,20 @@ const TaskContainer: React.FC<TodoItemProps> = ({
     setIsEditing(true);
   };
 
+  const handleCancelClick = () => {
+    setEditedDescription(initialDescription);
+    setIsEditing(false);
+  };
+
   const handleSaveClick = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:1337/api/task-lists/${taskId}`,
+        `${process.env.QUICK_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
         {
           data: {
             title: editedTitle,
             description: editedDescription,
             taskCreated: editedTaskCreated,
-            // Add other properties as needed
           },
         },
         {
@@ -156,23 +102,15 @@ const TaskContainer: React.FC<TodoItemProps> = ({
       }
 
       const updatedTask = response.data.data;
-
-      // Update state tasks by replacing the old task with the updated task
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === updatedTask.id ? updatedTask : task,
         ),
       );
-
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating task:", error);
     }
-  };
-
-  const handleCancelClick = () => {
-    setEditedDescription(initialDescription);
-    setIsEditing(false);
   };
 
   useEffect(() => {
@@ -180,6 +118,35 @@ const TaskContainer: React.FC<TodoItemProps> = ({
     setEditedDescription(initialDescription || "No Description");
   }, [initialDescription]);
 
+  useEffect(() => {
+    const currentDate = new Date();
+
+    if (taskCreated) {
+      // format date 'DD/MM/YYYY'
+      const formattedTaskCreated = taskCreated.replace(
+        /(\d{2})\/(\d{2})\/(\d{4})/,
+        "$3-$2-$1",
+      );
+      setTaskCreatedDate(formattedTaskCreated);
+
+      // Konversi tanggal taskCreated dari UTC ke zona waktu lokal (GMT+7)
+      const timeZone = "Asia/Jakarta";
+      const taskCreatedDate = utcToZonedTime(
+        new Date(formattedTaskCreated),
+        timeZone,
+      );
+      if (!isNaN(taskCreatedDate.getTime())) {
+        const timeDifference =
+          taskCreatedDate.getTime() - currentDate.getTime();
+        const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+        setRemainingDays(daysDifference);
+      } else {
+        console.error("Invalid taskCreated format:", taskCreated);
+      }
+    }
+  }, [taskCreated]);
+
+  // sticker area
   const [stickerOptionsPosition, setStickerOptionsPosition] = useState<{
     top: number;
     left: number;
@@ -196,16 +163,12 @@ const TaskContainer: React.FC<TodoItemProps> = ({
   };
 
   const selectSticker = (selectedOption: string) => {
-    // Check if the selected sticker is already in the list
     const updatedStickers = selectedStickers.includes(selectedOption)
       ? selectedStickers.filter((sticker) => sticker !== selectedOption)
       : [...selectedStickers, selectedOption];
 
     // Update state immediately upon selection
     setSelectedStickers(updatedStickers);
-
-    // Update local storage
-    // Use setTimeout to ensure that the local storage is updated after the state
     setTimeout(() => {
       storeStickers(updatedStickers);
     }, 0);
@@ -243,7 +206,6 @@ const TaskContainer: React.FC<TodoItemProps> = ({
   };
 
   useEffect(() => {
-    // Retrieve selected stickers from local storage on component mount
     try {
       const storedStickers = localStorage.getItem(
         `task_${taskId}_selectedSticker`,

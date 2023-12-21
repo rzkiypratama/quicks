@@ -3,18 +3,10 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import TaskContainer from "./TaskContainer";
 import LoadingIndicator from "../Loader";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-export interface TasksData {
-  id: number;
-  attributes: {
-    title: string;
-    description: string;
-    taskCreated: string;
-  };
-}
+import { TasksData } from "@/app/api/Types";
+import axios from "axios";
 
 const TodoPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("My Task");
@@ -43,32 +35,33 @@ const TodoPage: React.FC = () => {
   ) => {
     try {
       // Make a POST request to create a new task
-      const response = await fetch("http://localhost:1337/api/task-lists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Include any additional headers as needed
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        "http://localhost:1337/api/task-lists",
+        {
           data: {
             title,
             description,
             taskCreated,
           },
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // Include any additional headers as needed
+          },
+        },
+      );
+
       toast.success("Task Created!");
 
-      if (!response.ok) {
+      if (!response.data) {
         // Handle error scenarios, e.g., display an error message
         console.error("Failed to add task:", response.statusText);
         return;
       }
 
-      const responseData = await response.json();
-
       // Assuming your Strapi response includes the created task data
-      const newTask = responseData.data;
+      const newTask = response.data.data;
 
       // Update state tasks by adding the new task
       setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -84,7 +77,7 @@ const TodoPage: React.FC = () => {
     try {
       // Make a DELETE request to delete the task by ID
       const response = await axios.delete(
-        `http://localhost:1337/api/task-lists/${taskId}`,
+        `${process.env.QUICK_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
       );
 
       if (!response.data) {
@@ -108,7 +101,7 @@ const TodoPage: React.FC = () => {
         setIsLoading(true);
 
         const response = await axios.get(
-          "http://localhost:1337/api/task-lists",
+          `${process.env.QUICK_PUBLIC_BACKEND_URL}/task-lists`,
         );
 
         if (!response.data) {
@@ -118,22 +111,17 @@ const TodoPage: React.FC = () => {
         const fetchedTasks: TasksData[] = response.data.data;
 
         console.log("Fetched Tasks:", fetchedTasks);
-
-        // Check if fetchedTasks is an array before updating state
         if (Array.isArray(fetchedTasks)) {
           setTasks(fetchedTasks);
         } else {
           console.error("Fetched tasks is not an array:", fetchedTasks);
         }
-
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching tasks:", error);
         setIsLoading(false);
-        // Handle the error (e.g., display an error message or retry)
       }
     };
-
     fetchData();
   }, []);
 
@@ -219,12 +207,12 @@ const TodoPage: React.FC = () => {
         )}
       </div>
 
-      {/* Modal untuk menambahkan tugas baru guys */}
+      {/* Modal untuk menambahkan task baru guys */}
       {showNewTaskModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
           <div className="w-2/4 rounded-md bg-white p-6">
             <h2 className="mb-4 text-2xl font-semibold">New Task</h2>
-            {/* Form untuk menambahkan tugas baru */}
+            {/* Form untuk menambahkan task baru */}
             <div className="mb-4">
               <label
                 htmlFor="newTaskTitle"
@@ -286,10 +274,8 @@ const TodoPage: React.FC = () => {
                   const title = titleInput.value;
                   const taskDate = dateInput.value;
                   const description = descriptionInput.value;
-
-                  // Validate that all input fields are filled before adding a new task
+                  // Validate that all input
                   if (title && taskDate && description) {
-                    // Call the handleAddTask function with the extracted values
                     handleAddTask(title, description, taskDate);
                   }
                 }}

@@ -30,3 +30,14 @@ export interface TasksData {
     taskCreated: string;
   };
 }
+
+export interface TaskItemProps {
+  taskId: number;
+  title: string;
+  description: string;
+  taskCreated: string;
+  isComplete: boolean;
+  onDelete: () => void;
+  setTasks: React.Dispatch<React.SetStateAction<TasksData[]>>;
+  stickerOptions: string[];
+}

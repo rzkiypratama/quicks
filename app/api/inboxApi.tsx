@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {ChatDatas, NewChatMessage, ReplyData} from './Types'
 
-const API_URL = 'http://localhost:1337/api';
+const API_URL = `${process.env.QUICK_LOCAL_BACKEND_URL}`;
 
 // INBOX API
 export const fetchChatData = async (): Promise<ChatDatas[]> => {
