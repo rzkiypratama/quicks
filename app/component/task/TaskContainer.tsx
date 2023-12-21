@@ -178,7 +178,6 @@ const TaskContainer: React.FC<TaskItemProps> = ({
     }
   }, [taskCreated]);
 
-  // sticker area
   const showStickerOptions = (event: React.MouseEvent<HTMLSpanElement>) => {
     const stickerOptions = document.getElementById(`stickerOptions-${taskId}`);
     if (stickerOptions) {
