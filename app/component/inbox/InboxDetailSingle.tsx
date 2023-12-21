@@ -4,6 +4,7 @@ import chatData, { ChatData } from "../../api/chatDataSingle";
 import NewMessageLine from "../NewMessageLine";
 import InboxView from "./InboxView";
 import { FaArrowLeft, FaXmark } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 const InboxViewSingle: React.FC = () => {
   const [chatDataSingleState, setChatDataSingle] =
@@ -20,6 +21,12 @@ const InboxViewSingle: React.FC = () => {
   const [replyMessages, setReplyMessages] = useState<{ [key: number]: string }>(
     {},
   );
+
+  const router = useRouter();
+
+  const handleCloseClick = () => {
+    router.push("/");
+  };
 
   const handleOptionClick = (index: number) => {
     setSelectedChatIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -196,7 +203,7 @@ const InboxViewSingle: React.FC = () => {
                 <h1 className="font-semibold text-main">FastVisa Support</h1>
               </div>
             </div>
-            <FaXmark className="text-black" />
+            <FaXmark className="text-black cursor-pointer" onClick={handleCloseClick} />
           </div>
         )}
 
@@ -292,7 +299,7 @@ const InboxViewSingle: React.FC = () => {
                           </p>
                           <div className="mt-2 border-t border-gray-700"></div>
                           <p
-                            className="mt-2 cursor-pointer"
+                            className="mt-2 text-main cursor-pointer"
                             onClick={(event) => handleReplyClick(index, event)}
                           >
                             Reply
