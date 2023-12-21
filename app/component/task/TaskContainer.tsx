@@ -417,7 +417,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
 
                 <div
                   id={`stickerOptions-${taskId}`}
-                  className="absolute hidden w-72 rounded-md border bg-white p-2"
+                  className="absolute hidden w-64 rounded-md border select-none bg-white p-2 z-30"
                 >
                   {stickerOptions.map((option) => (
                     <p
@@ -453,6 +453,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
                       borderRadius: "3px",
                       color: "#4f4f4f",
                       fontWeight: "600",
+                      fontSize: "14px",
                     }}
                   >
                     {sticker}
