@@ -23,25 +23,142 @@ const InboxViewSingle: React.FC = () => {
   const [replyMessages, setReplyMessages] = useState<{ [key: number]: string }>(
     {},
   );
+  // new message line
+  const isNewMessage = true;
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleOptionClick = (index: number) => {
     setSelectedChatIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
   const handleEditClick = () => {
-    // Logika untuk menangani klik edit
     setSelectedChatIndex(null);
     console.log("Edit clicked");
   };
 
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const handleBadgeClick = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth", // biar smooth like fresh air
+      });
+    }
+  };
+
+  const handleDeleteClick = async (
+    index: number,
+    event: React.MouseEvent<HTMLParagraphElement>,
+  ) => {
+    event.preventDefault();
+    // Dapatkan id pesan yang akan dihapus
+    const chatIdToDelete = chatDataSingleApi[index]?.id;
+
+    if (!chatIdToDelete) {
+      console.error("Invalid chat ID");
+      return;
+    }
+    try {
+      await deleteChatMessage(chatIdToDelete);
+      const updatedChatData = [...chatDataSingleApi];
+      updatedChatData.splice(index, 1);
+      setChatDataApi(updatedChatData);
+      localStorage.setItem(
+        "chatDataSingleApi",
+        JSON.stringify(updatedChatData),
+      );
+
+      setSelectedChatIndex(null);
+    } catch (error) {
+      console.error("Error deleting chat message", error);
+    }
+  };
+
+  const handleReplyClick = (
+    index: number,
+    event: React.MouseEvent<HTMLParagraphElement>,
+  ) => {
+    event.preventDefault();
+    setReplyMessage(chatDataSingleApi[index].attributes.message);
+    setIsReplying(true);
+  };
+
+  const cancelReply = () => {
+    setReplyMessage(null);
+    setReplyDraft("");
+    setIsReplying(false);
+  };
+
+  // testing to add new chat as sender
+  const sendMessage = async () => {
+    console.log("newMessage:", newMessage);
+
+    if (!newMessage.trim()) {
+      return;
+    }
+
+    const currentDatetime = new Date();
+    const hours = currentDatetime.getHours();
+    const minutes = currentDatetime.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    const hours12 = hours % 12 || 12;
+    const currentTime = `${hours12}:${minutes} ${ampm}`;
+
+    const messageData = {
+      sender: "You",
+      message: newMessage || "",
+      time: currentTime,
+    };
+
+    try {
+      const newChat = await sendChatMessage(messageData);
+
+      if (newChat) {
+        // Perbarui state chatDataSingleApi
+        setChatDataApi((prevData) => [...prevData, newChat]);
+      }
+
+      setNewMessage("");
+    } catch (error) {
+      console.error("Error sending message", error);
+    }
+  };
+
+  const sendReply = () => {
+    if (!replyDraft.trim() || selectedChatIndex === null) {
+      console.log("Reply not sent: Empty or invalid data");
+      return;
+    }
+
+    const currentTime = new Date().toLocaleTimeString();
+    const newReplyChat = {
+      id: chatDataSingleApi.length + 2,
+      attributes: {
+        sender: "You",
+        message: replyDraft,
+        time: currentTime,
+      },
+    };
+
+    // Create a new chat object for the replied message
+    const repliedMessage =
+      chatDataSingleApi[selectedChatIndex]?.attributes?.message;
+    setChatDataApi([...chatDataSingleApi, newReplyChat]);
+    setReplyMessages({
+      ...replyMessages,
+      [newReplyChat.id]: repliedMessage,
+    });
+    setReplyDraft("");
+    setIsReplying(false);
+    console.log("Reply sent successfully");
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (chatContainerRef.current) {
         const { scrollTop, scrollHeight, clientHeight } =
           chatContainerRef.current;
-
-        // Tampilkan badge jika user scroll ke atas dan belum mencapai bagian bawah
+        //  badge position
         setShowNewMessageBadge(
           scrollTop > 0 && scrollTop + clientHeight < scrollHeight,
         );
@@ -59,163 +176,21 @@ const InboxViewSingle: React.FC = () => {
     };
   }, []);
 
-  const handleBadgeClick = () => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
-        behavior: "smooth", // biar smooth like fresh air
-      });
-    }
-  };
-
-  // new message line
-  const isNewMessage = true;
-
-  const handleDeleteClick = async (
-    index: number,
-    event: React.MouseEvent<HTMLParagraphElement>,
-  ) => {
-    event.preventDefault();
-
-    // Dapatkan id pesan yang akan dihapus
-    const chatIdToDelete = chatDataSingleApi[index]?.id;
-
-    if (!chatIdToDelete) {
-      console.error("Invalid chat ID");
-      return;
-    }
-
-    try {
-      // Panggil fungsi untuk menghapus pesan dari server
-      await deleteChatMessage(chatIdToDelete);
-
-      // Hapus pesan dari array
-      const updatedChatData = [...chatDataSingleApi];
-      updatedChatData.splice(index, 1);
-
-      // Update state untuk menyimpan perubahan
-      setChatDataApi(updatedChatData);
-
-      // Update localStorage untuk menyimpan perubahan
-      localStorage.setItem(
-        "chatDataSingleApi",
-        JSON.stringify(updatedChatData),
-      );
-
-      setSelectedChatIndex(null); // Menyembunyikan opsi setelah mengklik delete
-    } catch (error) {
-      console.error("Error deleting chat message", error);
-      // Handle error, mungkin dengan menampilkan pesan kesalahan ke pengguna
-    }
-  };
-
-  const handleReplyClick = (
-    index: number,
-    event: React.MouseEvent<HTMLParagraphElement>,
-  ) => {
-    event.preventDefault();
-    setReplyMessage(chatDataSingleApi[index].attributes.message);
-    setIsReplying(true);
-  };
-
-  const cancelReply = () => {
-    setReplyMessage(null);
-    setReplyDraft(""); // Clear the reply draft when canceling
-    setIsReplying(false);
-  };
-
-  // testing to add new chat as sender
-  const sendMessage = async () => {
-    console.log("newMessage:", newMessage);
-  
-    if (!newMessage.trim()) {
-      return;
-    }
-  
-    const currentDatetime = new Date();
-    const hours = currentDatetime.getHours();
-    const minutes = currentDatetime.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
-  
-    const hours12 = hours % 12 || 12;
-    const currentTime = `${hours12}:${minutes} ${ampm}`;
-  
-    const messageData = {
-      sender: "You",
-      message: newMessage || "",
-      time: currentTime,
-    };
-  
-    try {
-      const newChat = await sendChatMessage(messageData);
-  
-      if (newChat) {
-        // Perbarui state chatDataSingleApi
-        setChatDataApi((prevData) => [...prevData, newChat]);
-      }
-  
-      setNewMessage("");
-    } catch (error) {
-      console.error("Error sending message", error);
-    }
-  };
-  
-
-  const sendReply = () => {
-    if (!replyDraft.trim() || selectedChatIndex === null) {
-      console.log("Reply not sent: Empty or invalid data");
-      return; // Tidak mengirim reply kosong
-    }
-
-    const currentTime = new Date().toLocaleTimeString();
-
-    // Create a new chat object for your reply
-    const newReplyChat = {
-      id: chatDataSingleApi.length + 2,
-      attributes: {
-        sender: "You",
-        message: replyDraft,
-        time: currentTime,
-      },
-    };
-
-    // Create a new chat object for the replied message
-    const repliedMessage =
-      chatDataSingleApi[selectedChatIndex]?.attributes?.message;
-
-    // Update state untuk menyimpan perubahan
-    setChatDataApi([...chatDataSingleApi, newReplyChat]);
-
-    // Update repliedMessages state
-    setReplyMessages({
-      ...replyMessages,
-      [newReplyChat.id]: repliedMessage,
-    });
-
-    // Reset reply state
-    setReplyDraft("");
-    setIsReplying(false);
-
-    console.log("Reply sent successfully");
-  };
-
   useEffect(() => {
-    // Ambil data dari LocalStorage saat komponen dipasang
     const storedChatData = localStorage.getItem("chatDataSingleState");
     if (storedChatData) {
       setChatDataApi(JSON.parse(storedChatData));
     } else {
-      // Jika tidak ada data di LocalStorage, gunakan data default dari chatData
+      return;
     }
 
-    // Retrieve reply messages from localStorage
     const storedReplyMessages = localStorage.getItem("replyMessages");
     if (storedReplyMessages) {
       setReplyMessages(JSON.parse(storedReplyMessages));
     }
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchChatDataFromAPI = async () => {
       try {
         const data = await fetchChatData();
@@ -225,13 +200,10 @@ const InboxViewSingle: React.FC = () => {
         console.error("Error fetching chat data", error);
       }
     };
-
     fetchChatDataFromAPI();
   }, []);
 
-  useEffect(() => {
-    // Lakukan sesuatu setelah state berubah (misalnya, perbarui UI)
-  }, [chatDataSingleApi]);
+  useEffect(() => {}, [chatDataSingleApi]);
 
   return (
     <main className="fixed bottom-24 right-4 z-40 h-[80vh] w-[734px] rounded-md bg-white tracking-wide shadow-md">

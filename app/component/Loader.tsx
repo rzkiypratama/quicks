@@ -1,9 +1,6 @@
 import React from "react";
 import styles from "../../public/styles/Loader.module.css";
-
-interface LoadingIndicatorProps {
-  loadingText: string;
-}
+import { LoadingIndicatorProps } from "@/app/api/Types";
 
 const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ loadingText }) => (
   <div className={`flex flex-col ${styles["loader-container"]}`}>

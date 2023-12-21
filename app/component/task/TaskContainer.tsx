@@ -42,6 +42,11 @@ const TaskContainer: React.FC<TaskItemProps> = ({
   const [editedTitle, setEditedTitle] = useState<string>(title);
   const [editedTaskCreated, setEditedTaskCreated] =
     useState<string>(initialTaskCreated);
+  const [stickerOptionsPosition, setStickerOptionsPosition] = useState<{
+    top: number;
+    left: number;
+  }>({ top: 0, left: 0 });
+  const [selectedStickers, setSelectedStickers] = useState<string[]>([]);
 
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -54,6 +59,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
   const handleCheckboxChange = () => {
     setIsTaskCompleted((prevIsComplete) => !prevIsComplete);
   };
+
   useEffect(() => {
     localStorage.setItem(
       `task_${taskId}_isComplete`,
@@ -147,12 +153,6 @@ const TaskContainer: React.FC<TaskItemProps> = ({
   }, [taskCreated]);
 
   // sticker area
-  const [stickerOptionsPosition, setStickerOptionsPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 0, left: 0 });
-  const [selectedStickers, setSelectedStickers] = useState<string[]>([]);
-
   const showStickerOptions = (event: React.MouseEvent<HTMLSpanElement>) => {
     const stickerOptions = document.getElementById(`stickerOptions-${taskId}`);
     if (stickerOptions) {
@@ -166,8 +166,6 @@ const TaskContainer: React.FC<TaskItemProps> = ({
     const updatedStickers = selectedStickers.includes(selectedOption)
       ? selectedStickers.filter((sticker) => sticker !== selectedOption)
       : [...selectedStickers, selectedOption];
-
-    // Update state immediately upon selection
     setSelectedStickers(updatedStickers);
     setTimeout(() => {
       storeStickers(updatedStickers);
@@ -223,7 +221,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
   }, [taskId]);
 
   return (
-    <div>
+    <main>
       <ToastContainer
         position="top-right"
         autoClose={1750}
@@ -236,6 +234,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
         pauseOnHover
         theme="light"
       />
+
       {/* Task header */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex gap-3">
@@ -246,7 +245,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
             onChange={handleCheckboxChange}
           />
           <p
-            className={`mr-2 ${
+            className={`mr-2 font-semibold ${
               isTaskCompleted ? "text-gray-500 line-through" : ""
             }`}
           >
@@ -279,7 +278,6 @@ const TaskContainer: React.FC<TaskItemProps> = ({
           <span className="mr-2 cursor-pointer" onClick={handleToggleCollapse}>
             {isCollapsed ? <FaAngleDown /> : <FaAngleUp />}
           </span>
-
           <span className={`mr-2 cursor-pointer `} onClick={toggleOptionsMenu}>
             <FaEllipsisH />
           </span>
@@ -295,6 +293,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
           )}
         </div>
       </div>
+
       {/* Task item */}
       {!isCollapsed && (
         <div>
@@ -313,7 +312,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
               />
             )}
           </div>
-          <div></div>
+
           <div className="mb-4 flex items-center gap-3">
             <div className="mr-6"></div>
             <span>
@@ -350,6 +349,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
               </p>
             )}
           </div>
+          
           <div className="mb-4 flex items-center gap-3">
             <div className="mr-2"></div>
             <div className="flex w-full items-center rounded-md bg-[#f9f9f9] px-4 py-4">
@@ -405,7 +405,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
                         margin: "10px",
                         color: "#4f4f4f",
                         fontWeight: "600",
-                        fontSize: "14px"
+                        fontSize: "14px",
                       }}
                       className={
                         selectedStickers.includes(option) ? "selected" : ""
@@ -438,7 +438,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 };
 

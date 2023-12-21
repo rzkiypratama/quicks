@@ -20,12 +20,7 @@ const InboxView: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-
-      // Simulasi pengambilan data dari server
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Lakukan pengambilan data atau operasi lainnya di sini
-
       setIsLoading(false);
     };
 

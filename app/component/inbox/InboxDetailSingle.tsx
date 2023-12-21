@@ -26,7 +26,6 @@ const InboxViewSingle: React.FC = () => {
   };
 
   const handleEditClick = () => {
-    // Logika untuk menangani klik edit
     setSelectedChatIndex(null);
     console.log("Edit clicked");
   };
@@ -37,8 +36,6 @@ const InboxViewSingle: React.FC = () => {
       if (chatContainerRef.current) {
         const { scrollTop, scrollHeight, clientHeight } =
           chatContainerRef.current;
-
-        // Tampilkan badge jika user scroll ke atas dan belum mencapai bagian bawah
         setShowNewMessageBadge(
           scrollTop > 0 && scrollTop + clientHeight < scrollHeight,
         );
@@ -74,20 +71,13 @@ const InboxViewSingle: React.FC = () => {
   ) => {
     event.preventDefault();
     const updatedChatData = [...chatDataSingleState];
-
-    // Hapus pesan dari array
     updatedChatData.splice(index, 1);
-
-    // Update state untuk menyimpan perubahan
     setChatDataSingle(updatedChatData);
-
-    // Update localStorage untuk menyimpan perubahan
     localStorage.setItem(
       "chatDataSingleState",
       JSON.stringify(updatedChatData),
     );
-
-    setSelectedChatIndex(null); // Menyembunyikan opsi setelah mengklik delete
+    setSelectedChatIndex(null);
   };
 
   const handleReplyClick = (
@@ -101,14 +91,14 @@ const InboxViewSingle: React.FC = () => {
 
   const cancelReply = () => {
     setReplyMessage(null);
-    setReplyDraft(""); // Clear the reply draft when canceling
+    setReplyDraft("");
     setIsReplying(false);
   };
 
   // testing to add new chat as sender
   const sendMessage = () => {
     if (!newMessage.trim()) {
-      return; // Tidak mengirim pesan kosong
+      return;
     }
 
     const currentDatetime = new Date();
@@ -128,22 +118,15 @@ const InboxViewSingle: React.FC = () => {
       message: newMessage,
       time: currentTime,
     };
-
-    // Update state untuk menyimpan perubahan
     setChatDataSingle([...chatDataSingleState, newChat]);
-
-    // Update localStorage untuk menyimpan perubahan
     localStorage.setItem(
       "chatDataSingleState",
       JSON.stringify([...chatDataSingleState, newChat]),
     );
-
-    // Clear the input
     setNewMessage("");
   };
 
   useEffect(() => {
-    // Load reply messages from local storage
     const storedReplyMessages = JSON.parse(
       localStorage.getItem("replyMessages") || "{}",
     );
@@ -153,12 +136,10 @@ const InboxViewSingle: React.FC = () => {
   const sendReply = () => {
     if (!replyDraft.trim() || selectedChatIndex === null) {
       console.log("Reply not sent: Empty or invalid data");
-      return; // Tidak mengirim reply kosong
+      return;
     }
 
     const currentTime = new Date().toLocaleTimeString();
-
-    // Create a new chat object for your reply
     const newReplyChat = {
       id: chatDataSingleState.length + 2,
       sender: "You",
@@ -166,27 +147,19 @@ const InboxViewSingle: React.FC = () => {
       time: currentTime,
     };
 
-    // Create a new chat object for the replied message
     const repliedMessage = chatDataSingleState[selectedChatIndex]?.message;
-
-    // Update state untuk menyimpan perubahan
     setChatDataSingle([...chatDataSingleState, newReplyChat]);
-
-    // Update localStorage untuk menyimpan perubahan
     localStorage.setItem(
       "chatDataSingleState",
       JSON.stringify([...chatDataSingleState, newReplyChat]),
     );
 
-    // Update replyMessages in localStorage
     const updatedReplyMessages = {
       ...replyMessages,
       [newReplyChat.id]: repliedMessage,
     };
     setReplyMessages(updatedReplyMessages);
     localStorage.setItem("replyMessages", JSON.stringify(updatedReplyMessages));
-
-    // Reset reply state
     setReplyDraft("");
     setIsReplying(false);
 
@@ -194,15 +167,12 @@ const InboxViewSingle: React.FC = () => {
   };
 
   useEffect(() => {
-    // Ambil data dari LocalStorage saat komponen dipasang
     const storedChatData = localStorage.getItem("chatDataSingleState");
     if (storedChatData) {
       setChatDataSingle(JSON.parse(storedChatData));
     } else {
-      // Jika tidak ada data di LocalStorage, gunakan data default dari chatData
       setChatDataSingle(chatData);
     }
-
     // Retrieve reply messages from localStorage
     const storedReplyMessages = localStorage.getItem("replyMessages");
     if (storedReplyMessages) {
@@ -412,6 +382,6 @@ const InboxViewSingle: React.FC = () => {
       </div>
     </main>
   );
-}
+};
 
 export default InboxViewSingle;

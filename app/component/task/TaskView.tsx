@@ -13,7 +13,7 @@ const TodoPage: React.FC = () => {
   const [showNewTaskModal, setShowNewTaskModal] = useState<boolean>(false);
   const [tasks, setTasks] = useState<TasksData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
@@ -34,9 +34,8 @@ const TodoPage: React.FC = () => {
     taskCreated: string,
   ) => {
     try {
-      // Make a POST request to create a new task
       const response = await axios.post(
-        "http://localhost:1337/api/task-lists",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/task-lists`,
         {
           data: {
             title,
@@ -70,17 +69,11 @@ const TodoPage: React.FC = () => {
       const response = await axios.delete(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
       );
-
       if (!response.data) {
-        // Handle error scenarios, e.g., display an error message
         console.error("Failed to delete task:", response.statusText);
         return;
       }
-
-      // Update state tasks by removing the deleted task
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-
-      // Optional: Display a success message or perform any other actions after deletion
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -116,9 +109,9 @@ const TodoPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-24 mx-4 h-[80vh] w-full overflow-y-auto bg-white tracking-wide shadow-md  lg:right-4 lg:mx-0 lg:w-[734px]">
+    <main className="fixed bottom-24 mx-4 h-[80vh] w-full overflow-y-auto bg-white tracking-wide shadow-md  lg:right-4 lg:mx-0 lg:w-[734px]">
       <Head>
-        <title>Todo List</title>
+        <title>Task List</title>
       </Head>
       <ToastContainer
         position="top-right"
@@ -282,7 +275,7 @@ const TodoPage: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 };
 

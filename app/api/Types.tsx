@@ -41,3 +41,7 @@ export interface TaskItemProps {
   setTasks: React.Dispatch<React.SetStateAction<TasksData[]>>;
   stickerOptions: string[];
 }
+
+export interface LoadingIndicatorProps {
+  loadingText: string;
+}

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 
 export interface MessageDateLineProps {
-  timestamp: number; // Assuming timestamp is the timestamp of the message
+  timestamp: number;
 }
 
 const MessageDateLine: React.FC<MessageDateLineProps> = ({ timestamp }) => {

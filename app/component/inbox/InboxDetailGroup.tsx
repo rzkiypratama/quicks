@@ -16,13 +16,14 @@ export default function Component() {
   const [isContentScrollable, setIsContentScrollable] = useState(false);
   const [isReplyMode, setIsReplyMode] = useState<boolean>(false);
   const [replyMessage, setReplyMessage] = useState<string>("");
+  // new message line
+  const isNewMessage = true;
 
   const handleOptionClick = (index: number) => {
     setSelectedChatIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
   const handleEditClick = () => {
-    // Logika untuk menangani klik edit
     setSelectedChatIndex(null);
     console.log("Edit clicked");
   };
@@ -35,16 +36,57 @@ export default function Component() {
     const updatedChatData = [...chatDataGroupState];
     updatedChatData.splice(index, 1);
     setChatDataGroup(updatedChatData);
-
-    // Update localStorage untuk menyimpan perubahan
     localStorage.setItem("chatDataGroupState", JSON.stringify(updatedChatData));
-
-    setSelectedChatIndex(null); // Menyembunyikan opsi setelah mengklik delete
+    setSelectedChatIndex(null);
   };
 
   const handleReplyClick = (index: number) => {
     setIsReplyMode(true);
     setReplyMessage(chatDataGroupState[index].message);
+  };
+
+  // rpely nih bos
+  const handleSendReply = () => {
+    const currentTime = new Date().toLocaleTimeString();
+    const newReply = {
+      id: chatDataGroupState.length + 1,
+      sender: "You",
+      message: replyMessage,
+      time: currentTime,
+    };
+    setChatDataGroup([...chatDataGroupState, newReply]);
+    localStorage.setItem(
+      "chatDataGroupState",
+      JSON.stringify([...chatDataGroupState, newReply]),
+    );
+    setIsReplyMode(false);
+    setReplyMessage("");
+  };
+
+  // testing to add new chat as sender
+  const sendMessage = () => {
+    const currentTime = new Date().toLocaleTimeString();
+    const newChat = {
+      id: chatDataGroupState.length + 1,
+      sender: "You",
+      message: newMessage,
+      time: currentTime,
+    };
+    setChatDataGroup([...chatDataGroupState, newChat]);
+    localStorage.setItem(
+      "chatDataGroupState",
+      JSON.stringify([...chatDataGroupState, newChat]),
+    );
+    setNewMessage("");
+  };
+
+  const handleBadgeClick = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth", // biar smooth like fresh air
+      });
+    }
   };
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -73,74 +115,11 @@ export default function Component() {
     };
   }, []);
 
-  const handleBadgeClick = () => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
-        behavior: "smooth", // biar smooth like fresh air
-      });
-    }
-  };
-
-  // new message line
-  const isNewMessage = true;
-
-  // rpely nih bos
-  const handleSendReply = () => {
-    // Lakukan sesuatu dengan pesan yang akan di-reply (replyMessage)
-    // Misalnya, tambahkan pesan reply ke state chatDataGroupState
-    const currentTime = new Date().toLocaleTimeString();
-    const newReply = {
-      id: chatDataGroupState.length + 1,
-      sender: "You",
-      message: replyMessage,
-      time: currentTime,
-    };
-
-    // Update state untuk memasukkan chat reply baru
-    setChatDataGroup([...chatDataGroupState, newReply]);
-
-    // Simpan perubahan ke LocalStorage
-    localStorage.setItem(
-      "chatDataGroupState",
-      JSON.stringify([...chatDataGroupState, newReply]),
-    );
-
-    // Setelah menangani reply, kembalikan ke mode normal
-    setIsReplyMode(false);
-    setReplyMessage("");
-  };
-
-  // testing to add new chat as sender
-  const sendMessage = () => {
-    const currentTime = new Date().toLocaleTimeString();
-    const newChat = {
-      id: chatDataGroupState.length + 1,
-      sender: "You",
-      message: newMessage,
-      time: currentTime,
-    };
-
-    // Update state to include the new chat
-    setChatDataGroup([...chatDataGroupState, newChat]);
-
-    // Save the updated data to LocalStorage
-    localStorage.setItem(
-      "chatDataGroupState",
-      JSON.stringify([...chatDataGroupState, newChat]),
-    );
-
-    // Clear the input
-    setNewMessage("");
-  };
-
   useEffect(() => {
-    // Ambil data dari LocalStorage saat komponen dipasang
     const storedChatData = localStorage.getItem("chatDataGroupState");
     if (storedChatData) {
       setChatDataGroup(JSON.parse(storedChatData));
     } else {
-      // Jika tidak ada data di LocalStorage, gunakan data default dari chatData
       setChatDataGroup(chatDataGroup);
     }
   }, []);
@@ -154,9 +133,7 @@ export default function Component() {
         );
       }
     };
-
-    handleScrollability(); // Panggil sekali untuk inisialisasi
-
+    handleScrollability();
     if (chatContainerRef.current) {
       chatContainerRef.current.addEventListener("scroll", handleScrollability);
     }

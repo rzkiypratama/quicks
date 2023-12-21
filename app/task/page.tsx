@@ -23,7 +23,10 @@ const ButtonTask: React.FC = () => {
         <TaskView />
         <div className="fixed bottom-4 right-4 z-10 flex flex-row-reverse gap-5">
           <div className="relative">
-            <div className={`inbox-shadow cursor-pointer ${styles["inbox-shadow"]}`} onClick={handleBackClick}></div>
+            <div
+              className={`inbox-shadow cursor-pointer ${styles["inbox-shadow"]}`}
+              onClick={handleBackClick}
+            ></div>
             <img
               src="/assets/buttonIcon/taskactive-icon.png"
               alt="inbox button"
