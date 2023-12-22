@@ -48,6 +48,7 @@ const TaskContainer: React.FC<TaskItemProps> = ({
     left: number;
   }>({ top: 0, left: 0 });
   const [selectedStickers, setSelectedStickers] = useState<string[]>([]);
+  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -97,6 +98,37 @@ const TaskContainer: React.FC<TaskItemProps> = ({
       console.error("Error updating task date:", error);
     }
   };
+
+  const handleTitleChange = async (newTitle: string) => {
+    try {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/task-lists/${taskId}`,
+        {
+          data: {
+            title: newTitle,
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+  
+      if (!response.data) {
+        console.error("Failed to update title:", response.statusText);
+        return;
+      }
+  
+      // Update the local state with the new title
+      setEditedTitle(newTitle);
+  
+      toast.success("Title updated!");
+    } catch (error) {
+      console.error("Error updating title:", error);
+    }
+  };
+  
 
   const handleDeleteClick = () => {
     onDelete();
@@ -270,13 +302,16 @@ const TaskContainer: React.FC<TaskItemProps> = ({
             checked={isTaskCompleted}
             onChange={handleCheckboxChange}
           />
-          <p
-            className={`mr-2 font-semibold ${
-              isTaskCompleted ? "text-gray-500 line-through" : ""
+          <input
+            type="text"
+            placeholder={title}
+            value={editedTitle}
+            className={`w-72 font-semibold placeholder-gray-950 outline-none ${
+              isTaskCompleted ? "line-through placeholder-gray-500" : ""
             }`}
-          >
-            {title}
-          </p>
+            onChange={(e) => setEditedTitle(e.target.value)}
+            onBlur={() => handleTitleChange(editedTitle)}
+          />
         </div>
         <div className="flex items-center gap-2">
           {/* date remaining */}
