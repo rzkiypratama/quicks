@@ -30,61 +30,71 @@ const ButtonUnclicked: React.FC<ButtonMainProps> = ({
 
   return (
     <div
-      className={`fixed bottom-4 right-4 z-10 flex flex-row-reverse items-center justify-center gap-2`}
+      className={`fixed bottom-4 right-4 z-10 flex flex-row-reverse items-center justify-center gap-2 tracking-wider`}
     >
-      <img
-        src="/assets/buttonIcon/main-button.png"
-        alt="main button"
-        className={`h-[68px] w-[68px] transform cursor-pointer transition-transform ${
-          isTaskVisible ? "rotate-45" : ""
-        }`}
-        onClick={handleMainButtonClick}
-      />
+      <div className="flex flex-col items-center gap-2">
+        <p className="opacity-0">main</p>
+        <img
+          src="/assets/buttonIcon/main-button.png"
+          alt="main button"
+          className={`h-[68px] w-[68px] transform cursor-pointer transition-transform ${
+            isTaskVisible ? "rotate-45" : ""
+          }`}
+          onClick={handleMainButtonClick}
+        />
+      </div>
       {isTaskVisible && (
-        <motion.div className="flex items-center gap-2">
-          <motion.img
-            initial={{
-              x: 10,
-              opacity: 0,
-              scale: 1,
-              rotate: 30,
-            }}
-            animate={{
-              x: 0,
-              opacity: 1,
-              scale: 1,
-              rotate: 0,
-            }}
-            transition={{
-              duration: 0.2,
-            }}
-            src="/assets/buttonIcon/inboxinactive-icon.png"
-            alt="inbox button"
-            className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity delay-200"
-            onClick={handleInboxClick}
-          />
-          <motion.img
-            initial={{
-              x: 10,
-              opacity: 0,
-              scale: 1,
-              rotate: 30,
-            }}
-            animate={{
-              x: 0,
-              opacity: 1,
-              scale: 1,
-              rotate: 0,
-            }}
-            transition={{
-              duration: 0.2,
-            }}
-            src="/assets/buttonIcon/taskinactive-icon.png"
-            alt="task button"
-            className="delay-400 h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity"
-            onClick={handleTaskClick}
-          />
-        </motion.div>
+        <div className="flex items-center gap-2 text-white">
+          <div className="flex flex-col items-center gap-2">
+            <p>Task</p>
+            <motion.img
+              initial={{
+                x: 10,
+                opacity: 0,
+                scale: 1,
+                rotate: 30,
+              }}
+              animate={{
+                x: 0,
+                opacity: 1,
+                scale: 1,
+                rotate: 0,
+              }}
+              transition={{
+                duration: 0.2,
+              }}
+              src="/assets/buttonIcon/taskinactive-icon.png"
+              alt="task button"
+              className="delay-400 h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity"
+              onClick={handleTaskClick}
+            />
+          </div>
+
+          <div className="flex flex-col items-center gap-2">
+            <p>Inbox</p>
+            <motion.img
+              initial={{
+                x: 10,
+                opacity: 0,
+                scale: 1,
+                rotate: 30,
+              }}
+              animate={{
+                x: 0,
+                opacity: 1,
+                scale: 1,
+                rotate: 0,
+              }}
+              transition={{
+                duration: 0.2,
+              }}
+              src="/assets/buttonIcon/inboxinactive-icon.png"
+              alt="inbox button"
+              className="h-[68px] w-[68px] cursor-pointer opacity-100 transition-opacity delay-200"
+              onClick={handleInboxClick}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
