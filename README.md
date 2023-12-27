@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Simpul Technical Test: Quick App
 
-## Getting Started
+Welcome to Simpul Technical Test: Quick App! This project is a task and inbox management application built with Typescript, Next.js, Tailwind, and Strapi.
 
-First, run the development server:
+## Technologies Used
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Frontend:**
+  - Typescript, Next.js, Tailwind CSS, React Icons, Framer Motion
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Backend:**
+  - Strapi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Inbox
 
-## Learn More
+- **Chat Functionality:**
+  - Engage in conversations, reply to messages, and stay connected.
 
-To learn more about Next.js, take a look at the following resources:
+- **New Message Badge:**
+  - Easily identify new messages with a tap-to-view functionality.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Delete Messages:**
+  - Manage your inbox by deleting unnecessary messages.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Tasks
 
-## Deploy on Vercel
+- **Create New Tasks:**
+  - Quickly set up new tasks to stay organized.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Update Title, Date, and Description:**
+  - Customize your tasks by updating title, date, and task description.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Set Stickers:**
+  - Add visual flair to your tasks with stickers.
+
+- **Mark Task as Done:**
+  - Keep track of completed tasks by marking them as done.
+
+- **Collapsible Tasks:**
+  - Organize your workspace by collapsing tasks.
+
+- **Delete Tasks:**
+  - Remove completed or unnecessary tasks from your list.
+
+## Deployment
+
+- **Frontend:**
+  - [Quick Simpul App on Netlify](https://quick-simpul.netlify.app/)
+
+- **Backend:**
+  - [Strapi Admin Panel on Strapi Cloud](https://leading-sparkle-17b989be67.strapiapp.com/admin)
+
+## Local Development
+
+- **Backend Local Server:**
+  - Run Strapi locally on [localhost:1337](http://localhost:1337/)
+
+## Backend Repository
+
+- [Quicks-be GitHub Repository](https://github.com/quicks-be/quicks-be)
+
+Feel free to explore the application and its features. If you have any questions or feedback, don't hesitate to reach out!
