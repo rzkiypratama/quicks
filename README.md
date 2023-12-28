@@ -53,8 +53,20 @@ Welcome to Simpul Technical Test: Quick App! This project is a task and inbox ma
 
 ## Local Development
 
-- **Backend Local Server:**
-  - Run Strapi locally on [localhost:1337](http://localhost:1337/)
+- **Frontend Local Server:**
+  - Run the app locally on [localhost:3000](http://localhost:3000/) with `npm run dev`
+
+- **Backend Local Server (Strapi):**
+  - Run Strapi locally with `npm run dev`
+
+- **Environment Variables:**
+  - After cloning the frontend project, add a `.env` file with the following content and use the production:
+    ```
+    # Production API URL
+    NEXT_PUBLIC_API_URL=https://leading-sparkle-17b989be67.strapiapp.com/api
+    # Local API URL
+    NEXT_PUBLIC_API_URL=http://localhost:1337/api
+    ```
 
 ## Backend Repository
 
